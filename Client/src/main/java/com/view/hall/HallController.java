@@ -32,6 +32,7 @@ import java.util.ResourceBundle;
 
 public class HallController implements Initializable {
 
+    //<editor-fold defaultstate="collapsed" desc="// initialize for Game Hall (Do not open)" >
     @FXML private BorderPane borderPane;
     @FXML private TableView<Player> playerList;
     @FXML private TableColumn username;
@@ -48,7 +49,6 @@ public class HallController implements Initializable {
     @FXML private void handleButton10() throws IOException {enterTable(10);}
     @FXML private void handleButton11() throws IOException {enterTable(11);}
     @FXML private void handleButton12() throws IOException {enterTable(12);}
-
     @FXML public Label tableNum1;
     @FXML public Label tableNum2;
     @FXML public Label tableNum3;
@@ -61,38 +61,40 @@ public class HallController implements Initializable {
     @FXML public Label tableNum10;
     @FXML public Label tableNum11;
     @FXML public Label tableNum12;
+    //</editor-fold>
 
     public void refreshTableNum(int tableName, int playerInTable){
-        final String name = "tableNum"+tableName;
-        final String players = Integer.toString(playerInTable);
-        Platform.runLater(new Runnable() {
-            public void run() {
-                if (name.equals(tableNum1.getId())) {
-                    tableNum1.setText(players);
-                } else if (name.equals(tableNum2.getId())) {
-                    tableNum2.setText(players);
-                } else if (name.equals(tableNum3.getId())) {
-                    tableNum3.setText(players);
-                } else if (name.equals(tableNum4.getId())) {
-                    tableNum4.setText(players);
-                } else if (name.equals(tableNum5.getId())) {
-                    tableNum5.setText(players);
-                } else if (name.equals(tableNum6.getId())) {
-                    tableNum6.setText(players);
-                } else if (name.equals(tableNum7.getId())) {
-                    tableNum7.setText(players);
-                } else if (name.equals(tableNum8.getId())) {
-                    tableNum8.setText(players);
-                } else if (name.equals(tableNum9.getId())) {
-                    tableNum9.setText(players);
-                } else if (name.equals(tableNum10.getId())) {
-                    tableNum10.setText(players);
-                } else if (name.equals(tableNum11.getId())) {
-                    tableNum11.setText(players);
-                } else if (name.equals(tableNum12.getId())) {
-                    tableNum12.setText(players);
-                }
+        String name = "tableNum"+tableName;
+        String players = Integer.toString(playerInTable);
+        // <editor-fold defaultstate="collapsed" desc="//Refresh players in Table">
+
+        Platform.runLater(()->{
+            if (name.equals(tableNum1.getId())){
+                tableNum1.setText(players);
+            }else if (name.equals(tableNum2.getId())){
+                tableNum2.setText(players);
+            }else if (name.equals(tableNum3.getId())){
+                tableNum3.setText(players);
+            }else if (name.equals(tableNum4.getId())){
+                tableNum4.setText(players);
+            }else if (name.equals(tableNum5.getId())){
+                tableNum5.setText(players);
+            }else if (name.equals(tableNum6.getId())){
+                tableNum6.setText(players);
+            }else if (name.equals(tableNum7.getId())){
+                tableNum7.setText(players);
+            }else if (name.equals(tableNum8.getId())){
+                tableNum8.setText(players);
+            }else if (name.equals(tableNum9.getId())){
+                tableNum9.setText(players);
+            }else if (name.equals(tableNum10.getId())){
+                tableNum10.setText(players);
+            }else if (name.equals(tableNum11.getId())){
+                tableNum11.setText(players);
+            }else if (name.equals(tableNum12.getId())){
+                tableNum12.setText(players);
             }
+            // </editor-fold>
         });
     }
 
@@ -131,30 +133,24 @@ public class HallController implements Initializable {
         playerList.setItems(data);
     }
 
-    //@Override
+    @Override
     public void initialize(URL location, ResourceBundle resources) {
         //Drag and Drop animation
         //<editor-fold defaultstate="collapsed" desc=" Drag and Drop">
-        borderPane.setOnMousePressed(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent event) {
-                xOffset = Game.getPrimaryStage().getX() - event.getScreenX();
-                yOffset = Game.getPrimaryStage().getY() - event.getScreenY();
-                borderPane.setCursor(Cursor.CLOSED_HAND);
-            }
+        borderPane.setOnMousePressed(event -> {
+            xOffset = Game.getPrimaryStage().getX() - event.getScreenX();
+            yOffset = Game.getPrimaryStage().getY() - event.getScreenY();
+            borderPane.setCursor(javafx.scene.Cursor.CLOSED_HAND);
         });
 
-        borderPane.setOnMouseDragged(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent event) {
-                Game.getPrimaryStage().setX(event.getScreenX() + xOffset);
-                Game.getPrimaryStage().setY(event.getScreenY() + yOffset);
+        borderPane.setOnMouseDragged(event -> {
+            Game.getPrimaryStage().setX(event.getScreenX() + xOffset);
+            Game.getPrimaryStage().setY(event.getScreenY() + yOffset);
 
-            }
         });
 
-        borderPane.setOnMouseReleased(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent event) {
-                borderPane.setCursor(Cursor.DEFAULT);
-            }
+        borderPane.setOnMouseReleased(event -> {
+            borderPane.setCursor(Cursor.DEFAULT);
         });
         //</editor-fold>
 
@@ -186,41 +182,33 @@ public class HallController implements Initializable {
     }
 
     public void showTable(){
-        Platform.runLater(new Runnable() {
-            public void run() {
-                stage = new Stage();
-                stage.setResizable(false);
-                stage.setWidth(TableController.TableWidth);
-                stage.setHeight(TableController.TableHeight);
-                stage.initStyle(StageStyle.UNDECORATED);
-                stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                    public void handle(WindowEvent e) {
-                        Game.getPrimaryStage().show();
-                    }
-                });
-                stage.setScene(HallController.this.scene);
-                stage.centerOnScreen();
-                stage.show();
-                // Show ready stage
-                try {
-                    Game.getPrimaryStage().hide();
-                    TableController.getInstance().showReadyStage();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        Platform.runLater(() -> {
+            stage = new Stage();
+            stage.setResizable(false);
+            stage.setWidth(TableController.TableWidth);
+            stage.setHeight(TableController.TableHeight);
+            stage.initStyle(StageStyle.UNDECORATED);
+            stage.setOnCloseRequest((WindowEvent e) -> Game.getPrimaryStage().show());
+            stage.setScene(this.scene);
+            stage.centerOnScreen();
+            stage.show();
+            // Show ready stage
+            try {
+                Game.getPrimaryStage().hide();
+                TableController.getInstance().showReadyStage();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
     }
 
     public void joinTableFailure(){
-        Platform.runLater(new Runnable() {
-            public void run() {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Enter table failure");
-                alert.setContentText("Please change a table.");
-                alert.showAndWait();
-            }
+        Platform.runLater(()->{
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Enter table failure");
+            alert.setContentText("Please change a table.");
+            alert.showAndWait();
         });
     }
 

@@ -4,10 +4,13 @@ import java.io.Serializable;
 import java.util.Map;
 
 public class Message implements Serializable{
-
+    private String[] board;
+    private Map<String,Integer> playerScore;
     private Map<String,String> connectedClients;
     private Map<Integer,Integer> createdGames;
     private Map<String,String> playerList;
+    private Map<String,String> gameInfo;
+    private String[] gameResult;
     private PlayerAction playerAction;
     private GameStatus gameStatus;
     private PlayerStatus playerStatus;
@@ -21,8 +24,25 @@ public class Message implements Serializable{
     private int votingNum;
     private static final long serialVersionUID = 1L;
 
+
     public GameStatus getGameStatus() {
         return gameStatus;
+    }
+
+    public void setPlayerScore(Map<String,Integer> playerScore){
+        this.playerScore = playerScore;
+    }
+
+    public Map<String,Integer> getPlayerScore(){
+        return getPlayerScore();
+    }
+
+    public void setBoard(String[] board) {
+        this.board = board;
+    }
+
+    public String[] getBoard() {
+        return board;
     }
 
     public void setGameStatus(GameStatus gameStatus) {
@@ -100,22 +120,6 @@ public class Message implements Serializable{
     public void setFeedBackMessage(String feedBackMessage) {
         this.feedBackMessage = feedBackMessage;
     }
-    /*
-    public List<GameRoom> getCreatedGames() {
-        return createdGames;
-    }
-
-    public void setCreatedGames(List<GameRoom> createdGames) {
-        this.createdGames = createdGames;
-    }*/
-
-    /*public EachConnection[] getPlayerList() {
-        return playerList;
-    }
-
-    public void setPlayerList(EachConnection[] playerList) {
-        this.playerList = playerList;
-    }*/
 
     public int getVotingNum() {
         return votingNum;
@@ -148,5 +152,20 @@ public class Message implements Serializable{
     public void setPlayerList(Map<String, String> playerList) {
         this.playerList = playerList;
     }
-}
 
+    public Map<String, String> getGameInfo() {
+        return gameInfo;
+    }
+
+    public void setGameInfo(Map<String, String> gameInfo) {
+        this.gameInfo = gameInfo;
+    }
+
+    public String[] getGameResult() {
+        return gameResult;
+    }
+
+    public void setGameResult(String[] gameResult) {
+        this.gameResult = gameResult;
+    }
+}

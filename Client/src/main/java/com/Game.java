@@ -24,14 +24,25 @@ public class Game extends Application {
     //<editor-fold defaultstate="collapsed" desc="//namePool">
     private static String[] namepool={
             "Ahri","Akali","Alistar","Amumu","Anivia","Annie",
-            "Ashe","Aastha Sol","Azir","Bard","Blitzcrank","Brand","Braum",
+            "Ashe","Aurelion Sol","Azir","Bard","Blitzcrank","Brand","Braum",
             "Caitlyn","Camille","Cassiopeia","Cho\'Gath","Corki","Darius","Diana",
-            "Mundo","Draven","Ekko","Elise","Evelynn","Ezreal","Fiddler",
+            "Mundo","Draven","Ekko","Elise","Evelynn","Ezreal","Fiddlesticks",
             "Fiora","Fizz","Galio","Gangplank","Garen","Gnar","Gragas",
             "Graves","Hecarim","Heimerdinger","Illaoi","Irelia","Ivern","Janna",
             "Jarvan","Jax","Jayce","Jhin","Jinx","Kai\'Sa","Kalista",
             "Karma","Karthus","Kassadin","Katarina","Kayle","Kayn","Kennen",
-            "Kha\'Zix"
+            "Kha\'Zix","Kindred","Kled","Kog\'Maw","LeBlanc","Lee Sin","Leona",
+            "Lissandra","Lucian","Lulu","Lux","Malphite","Malzahar","Maokai",
+            "Master Yi","Miss Fortune","Mordekaiser","Morgana","Nami","Nasus","Nautilus",
+            "Nidalee","Nocturne","Nunu","Olaf","Orianna","Ornn","Pantheon",
+            "Poppy","Pyke","Quinn","Rakan","Rammus","Rek\'Sai","Renekton",
+            "Rengar","Riven","Rumble","Ryze","Sejuani","Shaco","Shen",
+            "Shyvana","Singed","Sion","Sivir","Skarner","Sona","Soraka",
+            "Swain","Syndra","Tahm Kench","Taliyah","Talon","Taric","Teemo",
+            "Thresh","Tristana","Trundle","Tryndamere","Twisted Fate","Twitch","Udyr",
+            "Urgot","Varus","Vayne","Veigar","Vel\'Koz","Vi","Viktor",
+            "Vladimir","Volibear","Warwick","Wukong","Xayah","Xerath","Xin Zhao",
+            "Yasuo","Yorick","Zed","Ziggs","Zilean","Zoe","Zyra"
     };
     //</editor-fold>
 
@@ -55,11 +66,7 @@ public class Game extends Application {
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
-        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            public void handle(WindowEvent e) {
-                Platform.exit();
-            }
-        });
+        primaryStage.setOnCloseRequest(e -> Platform.exit());
     }
 
     public static Stage getPrimaryStage() {
@@ -84,9 +91,7 @@ public class Game extends Application {
             LoginController.getInstance().loginFailure("Could not connect to server");
         }
     }
-//    public static void ready(){
-//        sendmsg("game|ready");
-//    }
+
 //    public static void sendcharacter(String character, String location, String word){
 //        sendmsg("setCharacter|" + character+" " + location +" "+word);
 //    }
@@ -121,9 +126,29 @@ public class Game extends Application {
         i = rand.nextInt(namepool.length);
         return(namepool[i]);
     }
+
+    public static void invite(){
+        Message message = new Message();
+        message.setPlayerStatus(PlayerStatus.IN_ROOM);
+        message.setPlayerAction(PlayerAction.INVITE);
+        sendmsg(message);
+    }
+    public static void invitePlayer(String name){
+        Message message = new Message();
+        message.setPlayerStatus(PlayerStatus.IN_ROOM);
+        message.setPlayerAction(PlayerAction.INVITE_PLAYER);
+        message.setClientName(name);
+        sendmsg(message);
+    }
+    public static void ready(){
+        Message message = new Message();
+        message.setPlayerStatus(PlayerStatus.IN_ROOM);
+        message.setPlayerAction(PlayerAction.READY);
+        sendmsg(message);
+    }
     public static void returnToHall(){
         Message message = new Message();
-        message.setPlayerStatus(PlayerStatus.IN_HALL);
+        message.setPlayerStatus(PlayerStatus.IN_ROOM);
         message.setPlayerAction(PlayerAction.RETURN_HALL);
         sendmsg(message);
     }
@@ -136,7 +161,7 @@ public class Game extends Application {
     public static void entryTable(int tableNumber){
         Message message = new Message();
         message.setPlayerStatus(PlayerStatus.IN_HALL);
-        message.setPlayerAction(PlayerAction.JOIN_GAME);
+        message.setPlayerAction(PlayerAction.JOIN_TABLE);
         message.setTableId(tableNumber);
         sendmsg(message);
     }

@@ -12,7 +12,7 @@ public class Server {
     /* Setting up variables */
 	//Done server socket connection
     private static int clientNum = 0; // use to track client number (all players)
-    private static int PORT = 8888;
+    private static int PORT = 8886;
     static Logger logger = LoggerFactory.getLogger(Server.class);
 
     public static void main(String[] args) throws Exception {

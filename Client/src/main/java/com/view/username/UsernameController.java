@@ -49,30 +49,24 @@ public class UsernameController implements Initializable {
         return instance;
     }
 
-    //@Override
+    @Override
     public void initialize(URL location, ResourceBundle resources) {
         //Drag and Drop animation
         //<editor-fold defaultstate="collapsed" desc=" Drag and Drop">
-        borderPane.setOnMousePressed(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent event) {
-                xOffset = Game.getPrimaryStage().getX() - event.getScreenX();
-                yOffset = Game.getPrimaryStage().getY() - event.getScreenY();
-                borderPane.setCursor(Cursor.CLOSED_HAND);
-            }
+        borderPane.setOnMousePressed(event -> {
+            xOffset = Game.getPrimaryStage().getX() - event.getScreenX();
+            yOffset = Game.getPrimaryStage().getY() - event.getScreenY();
+            borderPane.setCursor(javafx.scene.Cursor.CLOSED_HAND);
         });
 
-        borderPane.setOnMouseDragged(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent event) {
-                Game.getPrimaryStage().setX(event.getScreenX() + xOffset);
-                Game.getPrimaryStage().setY(event.getScreenY() + yOffset);
+        borderPane.setOnMouseDragged(event -> {
+            Game.getPrimaryStage().setX(event.getScreenX() + xOffset);
+            Game.getPrimaryStage().setY(event.getScreenY() + yOffset);
 
-            }
         });
 
-        borderPane.setOnMouseReleased(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent event) {
-                borderPane.setCursor(Cursor.DEFAULT);
-            }
+        borderPane.setOnMouseReleased(event -> {
+            borderPane.setCursor(Cursor.DEFAULT);
         });
         //</editor-fold>
 
@@ -187,27 +181,23 @@ public class UsernameController implements Initializable {
     }
 
     public void duplicatedUsername(){
-        Platform.runLater(new Runnable() {
-            public void run() {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Username already exist");
-                alert.setContentText("Please change a username.");
-                alert.showAndWait();
-            }
+        Platform.runLater(()->{
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Username already exist");
+            alert.setContentText("Please change a username.");
+            alert.showAndWait();
         });
     }
 
     public void showHall() {
-        Platform.runLater(new Runnable() {
-            public void run() {
-                Stage stage = (Stage) usernameTF.getScene().getWindow();
-                stage.setResizable(false);
-                stage.setWidth(HallController.HallWidth);
-                stage.setHeight(HallController.HallHeight);
-                stage.setScene(UsernameController.this.scene);
-                stage.centerOnScreen();
-            }
+        Platform.runLater(() -> {
+            Stage stage = (Stage) usernameTF.getScene().getWindow();
+            stage.setResizable(false);
+            stage.setWidth(HallController.HallWidth);
+            stage.setHeight(HallController.HallHeight);
+            stage.setScene(this.scene);
+            stage.centerOnScreen();
         });
     }
 }
