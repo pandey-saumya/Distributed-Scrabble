@@ -115,19 +115,20 @@ public class GameRoom{
         }
         return -1;
     }
-
-    public String votingResult(){
-        if (turnNum == 4 && votingNum == MAXIMUM_PLAYER_NUMBER){
+//TODO VOTING RESULT CONDITIONS ADD HERE
+   /* public String votingResult(){
+        if (turnNum == getturnnumber  && votingNum == MAXIMUM_PLAYER_NUMBER && getAcceptcount && getRejectcount){
             setTurnNum(0);
             return "Accept";
-        }else if (turnNum == 4 && votingNum != MAXIMUM_PLAYER_NUMBER){
+        }else if (turnNum == getturnnumber  && votingNum == !MAXIMUM_PLAYER_NUMBER && getAcceptcount && getRejectcount){
             setTurnNum(0);
             return "Reject";
         }else{
             return "inProgress";
         }
-    }
+    }*/
 
+//ADD PASS RESULT CONDITIONS HERE. BELOW IS ONE CASE
     public String passResult(){
         if (turnNum == 4 && passNum == MAXIMUM_PLAYER_NUMBER){
             setTurnNum(0);
@@ -149,7 +150,7 @@ public class GameRoom{
         return false;
     }
 
-    //TODO gameResult format
+    //TODO gameResult display format
     public void gameResult(){
 
     }

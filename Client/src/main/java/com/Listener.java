@@ -88,7 +88,7 @@ public class Listener extends Thread {
                             }
                         }
                         if (msg.getGameStatus() == GameStatus.ALL_READY){
-                            //TODO show game will start in 3 sec.
+                            //TODO ADD TIMER -game will start in x sec.
                         }
                         break;
                     case IN_GAME:

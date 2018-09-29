@@ -21,7 +21,7 @@ import javafx.stage.WindowEvent;
 
 public class Game extends Application {
 
-    //<editor-fold defaultstate="collapsed" desc="//namePool">
+    //<editor-fold defaultstate="collapsed" desc="//Random namePool for usernames for logging in the game arena ">
     private static String[] namepool={
             "Ahri","Akali","Alistar","Amumu","Anivia","Annie",
             "Ashe","Aurelion Sol","Azir","Bard","Blitzcrank","Brand","Braum",
