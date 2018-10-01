@@ -90,6 +90,11 @@ public class Listener extends Thread {
                         if (msg.getGameStatus() == GameStatus.ALL_READY){
                             //TODO ADD TIMER -game will start in x sec.
                         }
+                        if (msg.getGameStatus() == GameStatus.ALL_READY){
+                            Game.gameStart();
+                            //show count down timer & start game
+                            TableController.getInstance().gameStart();
+                        }
                         break;
                     case IN_GAME:
                         if (msg.getPlayerAction() == PlayerAction.GAME_CONTENT) {

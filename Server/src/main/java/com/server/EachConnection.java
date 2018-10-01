@@ -187,7 +187,7 @@ public class EachConnection implements Runnable {
                 ServerState.getGameInstance().gameConnected(gameRoom);
                 this.tableId = tableId;
                 setClientStatus(PlayerStatus.IN_ROOM);
-                ServerState.clientList.replace(clientName,"In Game");
+                ServerState.clientList.replace(clientName,"Online");
                 // set message
                 toClient.setPlayerStatus(PlayerStatus.IN_HALL);
                 toClient.setPlayerAction(PlayerAction.JOIN_TABLE);

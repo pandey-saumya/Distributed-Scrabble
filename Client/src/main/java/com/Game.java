@@ -165,6 +165,12 @@ public class Game extends Application {
         message.setTableId(tableNumber);
         sendmsg(message);
     }
+    public static void gameStart(){
+        Message message = new Message();
+        message.setPlayerStatus(PlayerStatus.IN_ROOM);
+        message.setGameStatus(GameStatus.ALL_READY);
+        sendmsg(message);
+    }
 //    public static boolean invitePlayer(String playername){
 //        sendmsg(playername);
 //        return checkValid(playername);

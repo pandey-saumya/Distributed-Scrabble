@@ -455,7 +455,10 @@ public class TableController implements Initializable{
     //</editor-fold>
     private static TableController instance;
     private static Stage readyStage;
+    private static Stage timerStage;
     public static ReadyController readyController;
+    public static TimerController timerController;
+
 
     public TableController(){
         instance = this;
@@ -463,6 +466,10 @@ public class TableController implements Initializable{
 
     public static TableController getInstance() {
         return instance;
+    }
+
+    public Stage getTimerStage() {
+        return timerStage;
     }
 
     public Stage getReadyStage(){
@@ -540,6 +547,15 @@ public class TableController implements Initializable{
         });
     }
 
+    public void setAllReady(){
+        Platform.runLater(()->{
+            player1Ready.setVisible(false);
+            player2Ready.setVisible(false);
+            player3Ready.setVisible(false);
+            player4Ready.setVisible(false);
+        });
+    }
+
     public void refreshPlayerStatus(String name,String status){
         String playerName = name;
         String readyStatus = status;
@@ -550,6 +566,7 @@ public class TableController implements Initializable{
                     player1Ready.setVisible(false);
                 }else if (readyStatus.equals("Ready")){
                     player1Ready.setVisible(true);
+                    player1Turn.setImage(new Image(getClass().getClassLoader().getResource("images/true.png").toString()));
                 }
             }else if (player2Name.getText().equals("Empty")){
                 player2Name.setText(playerName);
@@ -557,6 +574,7 @@ public class TableController implements Initializable{
                     player2Ready.setVisible(false);
                 }else if (readyStatus.equals("Ready")){
                     player2Ready.setVisible(true);
+                    player2Turn.setImage(new Image(getClass().getClassLoader().getResource("images/true.png").toString()));
                 }
             }else if (player3Name.getText().equals("Empty")){
                 player3Name.setText(playerName);
@@ -564,6 +582,7 @@ public class TableController implements Initializable{
                     player3Ready.setVisible(false);
                 }else if (readyStatus.equals("Ready")){
                     player3Ready.setVisible(true);
+                    player3Turn.setImage(new Image(getClass().getClassLoader().getResource("images/true.png").toString()));
                 }
             }else if (player4Name.getText().equals("Empty")){
                 player4Name.setText(playerName);
@@ -571,6 +590,7 @@ public class TableController implements Initializable{
                     player4Ready.setVisible(false);
                 }else if (readyStatus.equals("Ready")){
                     player4Ready.setVisible(true);
+                    player4Turn.setImage(new Image(getClass().getClassLoader().getResource("images/true.png").toString()));
                 }
             }
         });
@@ -599,6 +619,27 @@ public class TableController implements Initializable{
         });
     }
 
+    public void gameStart() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/timer.fxml"));
+        Parent window = (Pane) fxmlLoader.load();
+        timerController = fxmlLoader.getController();
+        Scene timerScene = new Scene(window);
+        timerScene.setFill(null);
+        Platform.runLater(()->{
+            timerStage = new Stage();
+            timerStage.initOwner(title.getScene().getWindow());
+            timerStage.initStyle(StageStyle.UNDECORATED);
+            timerStage.initStyle(StageStyle.TRANSPARENT);
+            timerStage.initModality(Modality.APPLICATION_MODAL);
+            timerStage.setWidth(TableWidth);
+            timerStage.setHeight(TableHeight);
+            timerStage.setX(HallController.getStage().getX());
+            timerStage.setY(HallController.getStage().getY());
+            timerStage.setScene(timerScene);
+            timerStage.show();
+        });
+        this.setAllReady();
+    }
     @FXML
     private void confirm() {
         //TODO - send to server (playerStatus = inGame, playerAction = game_content)
@@ -611,7 +652,20 @@ public class TableController implements Initializable{
 
     @FXML
     private void help(){
-        //TODO - UI - <help>
+        //TODO - UI EXPAND - <help>
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Welcome to the Game");
+        alert.setHeaderText("About Distributed Scrabble:");
+        alert.setContentText("Click on Exit if you wish to exit the game"
+                +"Each player will place on character in each turn \r\n\r\n Player will then choose the word from the grid and Press confirm to submit"
+                + "Score is equal to the length of the valid word"
+                + "he word is considered valid if all the other players vote in favour of the word"
+                +"The game ends when one player quits \r\n\r\n or if there is no place left in the grid");
+        alert.setContentText("");
+        alert.setContentText("Click pass if you wish to skip the turn");
+        alert.setContentText("Give your vote for each made by fellow players");
+        alert.showAndWait();
+
     }
 
     // return to game hall
@@ -627,7 +681,15 @@ public class TableController implements Initializable{
             Game.returnToHall();
         }
     }
+//TODO ADD ACCEPT WORD AND REJECT WORD FUNCTIONALITY HERE
+    /*private void acceptword(){
 
+    }
+
+
+    private void rejectword(){
+
+    }*/
     // Minimize Window
     public void minimizeWindow(){
         HallController.getStage().setIconified(true);
