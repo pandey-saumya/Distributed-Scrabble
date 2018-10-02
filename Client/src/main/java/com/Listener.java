@@ -3,7 +3,7 @@ package com;
 import com.messages.GameStatus;
 import com.messages.Message;
 import com.messages.PlayerAction;
-import com.model.player.Player;
+import com.model.UIplayer.UIplayer;
 import com.view.hall.HallController;
 import com.view.login.LoginController;
 import com.view.table.TableController;
@@ -60,7 +60,7 @@ public class Listener extends Thread {
                             HallController.getInstance().clearTable();
                             while (iterator.hasNext()) {
                                 String key = iterator.next().toString();
-                                Player player = new Player(key, msg.getConnectedClients().get(key));
+                                UIplayer player = new UIplayer(key, msg.getConnectedClients().get(key));
                                 HallController.getInstance().updateStatus(player);
                             }
                             HallController.getInstance().refreshTable();
@@ -109,6 +109,12 @@ public class Listener extends Thread {
                             while (iterator_score.hasNext()) {
                                 String key_score = iterator_score.next();
                             }
+                        }
+                        // for single player logic is wrong for multiplayer has to be changed based on turn
+                        if(msg.getPlayerAction() == PlayerAction.VOTING){
+                            int score = msg.getScore();
+                            TableController.getInstance().refreshPlayerScore(msg.getClientName(),score);
+                            System.out.println("Score "+ score);
                         }
                         msg.getBoard();
                         break;

@@ -8,10 +8,8 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+
 
 public class GameRoom{
     // assuming there are up to 4 players in each game room
@@ -30,23 +28,29 @@ public class GameRoom{
     private int turnNum = 0;
     private int passNum = 0;
     private int totalTurn = 0;
-    private Map<String,String> playerStatus = new HashMap();
+    boolean allPass = false;
+    ArrayList<Player> playerarray=new ArrayList<Player>();
+    //    private Map<String,String> playerStatus = new HashMap();
     private String[] board;
-    private Map<String,Integer> playerScore = new HashMap();
-    public GameRoom(int clientNum, int tableId) {
-        addPlayer(clientNum);
+    //    private Map<String,Integer> playerScore = new HashMap();
+    public GameRoom( Player player, int tableId) {
+        addPlayer(player);
         initialBoard();
         this.tableId = tableId;
     }
-    public void initialGame(){
-        for (String key : playerStatus.keySet()) {
-            playerStatus.replace(key, "NotTurn");
+    public void initialGame(Player player){
+        for(int i=0;i<playerarray.size();i++)
+        {
+            playerarray.get(i).setgamestatus("NotTurn");
         }
-        String[] keys = playerStatus.keySet().toArray(new String[0]);
-        Random random = new Random();
-        String randomKey = keys[random.nextInt(keys.length)];
-        playerStatus.replace(randomKey,"Turn");
+//        String[] keys = playerStatus.keySet().toArray(new String[0]);
+//        Random random = new Random();
+//        String randomKey = keys[random.nextInt(keys.length)];
+//        playerStatus.replace(randomKey,"Turn");
+//        player.setgamestatus("Turn");
+        player.setgamestatus("Turn");
     }
+
     public void initialBoard(){
         board = new String[400];
         for (int i =0; i<400;i++){
@@ -59,62 +63,57 @@ public class GameRoom{
     public String[] getBoard(){
         return board;
     }
-    public void setPlayerScore(String name,Integer score){
-        playerScore.replace(name,score);
+    public void setPlayerScore(Player player,Integer score){
+        player.setscore(score);
     }
-    public Map<String,Integer> getPlayerScore(){
-        return playerScore;
+
+
+    public ArrayList<Player> getAll(){
+        return playerarray;
     }
-    public void addPlayer(int clientNum){
+
+    public void addPlayer(Player player){
+        System.out.println("inside this");
         List<EachConnection> clients = ServerState.getClientInstance().getConnectedClients();
         for (EachConnection client : clients){
-            if (client.getClientNum() == clientNum){
+            if (client.getClientNum() == player.getClientnum()){
+                playerarray.add(player);
                 playerList[numOfPlayer] = client;
-                playerStatus.put(client.getClientName(),"NotReady");
-                playerScore.put(client.getClientName(),0);
+                player.setgamestatus("NotReady");
+                player.setscore(0);
             }
         }
         this.numOfPlayer+=1;
     }
 
-    public void deletePlayer(int clientNum,String name){
-        int index = indexOf(clientNum);
-        playerStatus.remove(name);
-        playerScore.remove(name);
-        if (index != -1){
-            playerList[index] = null;
-            for (int x = 0; x < numOfPlayer ; x++) {
-                if(x>=index){
-                    playerList[x] = playerList[x+1];
-                }
-            }
-        }
+    public void deletePlayer(Player player){
+//        int index = indexOf(player.getClientnum());
+        playerarray.remove(player);
         this.numOfPlayer-=1;
+//        if (index != -1){
+//            playerList[index] = null;
+//            for (int x = 0; x < numOfPlayer ; x++) {
+//                if(x>=index){
+//                    playerList[x] = playerList[x+1];
+//                }
+//            }
+//        }
     }
 
-    public void playerReady(String name){
-        playerStatus.replace(name,"Ready");
+    public void playerReady(Player player){
+        player.setgamestatus("Ready");
     }
 
-    public void playerTurn(String name) {
-        playerStatus.replace(name,"Turn");
-        for (String key : playerStatus.keySet()) {
-            if (!key.equals(name)) {
-                playerStatus.replace(key, "NotTurn");
-            }
-        }
-    }
-    public Map getPlayerStatus(){
-        return playerStatus;
-    }
-    private int indexOf(int clientNum){
-        for (int i = 0; i <numOfPlayer ; i++) {
-            if (playerList[i].getClientNum() == clientNum){
-                return i;
-            }
-        }
-        return -1;
-    }
+//    public void playerTurn(String name) {
+//        playerStatus.replace(name,"Turn");
+//        for (String key : playerStatus.keySet()) {
+//            if (!key.equals(name)) {
+//                playerStatus.replace(key, "NotTurn");
+//            }
+//        }
+//    }
+
+
 //TODO VOTING RESULT CONDITIONS ADD HERE
    /* public String votingResult(){
         if (turnNum == getturnnumber  && votingNum == MAXIMUM_PLAYER_NUMBER && getAcceptcount && getRejectcount){
@@ -128,7 +127,7 @@ public class GameRoom{
         }
     }*/
 
-//ADD PASS RESULT CONDITIONS HERE. BELOW IS ONE CASE
+    //ADD PASS RESULT CONDITIONS HERE. BELOW IS ONE CASE
     public String passResult(){
         if (turnNum == 4 && passNum == MAXIMUM_PLAYER_NUMBER){
             setTurnNum(0);
@@ -141,10 +140,43 @@ public class GameRoom{
         }
     }
 
+    public int votingResult(Player player){
+        for(int i=0;i<playerarray.size();i++)
+        {
+            int vote = playerarray.get(i).getVote();
 
+            if(vote == 0){
+                player.setscore(20);
+                return player.getscore();
+            }
+        }
+        player.setscore(50);
+        int score = player.getscore();
+        return score;
+    }
+
+    public void PassResult(Player player){
+        int totalpass = 0;
+        for(int i=0;i<playerarray.size();i++)
+        {
+            int pass = playerarray.get(i).getPass();
+            totalpass += pass;
+            if(totalpass == playerarray.size()){
+                allPass = true;
+                player.setscore(0);
+                // set score doing dummy
+                // call game result pending
+                gameEnd();
+            }
+        }
+
+    }
 
     public boolean gameEnd(){
         if (numOfPlayer < MINIMUM_PLAYER_NUMBER || spaceRemain == 0){
+            return true;
+        }
+        if(allPass){
             return true;
         }
         return false;
@@ -187,22 +219,18 @@ public class GameRoom{
         this.spaceRemain = spaceRemain;
     }
 
-    public EachConnection[] getPlayerList() {
-        return playerList;
+    public ArrayList<Player> getPlayerList() {
+        return playerarray;
     }
 
-    public void setPlayerList(EachConnection[] playerList) {
-        this.playerList = playerList;
+    public void setPlayerList(ArrayList<Player> playerarray) {
+        this.playerarray = playerarray;
     }
 
     public int getVotingNum() {
         return votingNum;
     }
 
-    public void voting(int votingNum) {
-        this.votingNum += votingNum;
-        this.turnNum += 1;
-    }
 
     public int getTurnNum() {
         return turnNum;

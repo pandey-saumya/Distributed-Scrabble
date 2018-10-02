@@ -22,8 +22,8 @@ public class Message implements Serializable{
     private int clientNum;
     private int tableId;
     private int votingNum;
+    private int score;
     private static final long serialVersionUID = 1L;
-
 
     public GameStatus getGameStatus() {
         return gameStatus;
@@ -127,6 +127,14 @@ public class Message implements Serializable{
 
     public void setVotingNum(int votingNum) {
         this.votingNum = votingNum;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 
     public Map<String, String> getConnectedClients() {

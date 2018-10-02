@@ -92,23 +92,27 @@ public class Game extends Application {
         }
     }
 
-//    public static void sendcharacter(String character, String location, String word){
+    //    public static void sendcharacter(String character, String location, String word){
 //        sendmsg("setCharacter|" + character+" " + location +" "+word);
 //    }
 //    public static void passturn(){
 //        sendmsg("passturn");
 //    }
-//    public static void voting(String word){
-//        //TODO show the word
-//        boolean vote = true;
-//        //TODO get the voting result from UI.
-//        if (vote == true){
-//            sendmsg("votingresult|true");
-//        }
-//        else{
-//            sendmsg("votingresult|false");
-//        }
-//    }
+    public static void voting(int vote){
+        Message message = new Message();
+        message.setPlayerStatus(PlayerStatus.IN_GAME);
+        message.setPlayerAction(PlayerAction.VOTING);
+        message.setVotingNum(vote);
+        sendmsg(message);
+    }
+
+    public static void pass(int pass){
+        Message message = new Message();
+        message.setPlayerStatus(PlayerStatus.IN_GAME);
+        message.setPlayerAction(PlayerAction.PASS);
+        message.setVotingNum(pass);
+        sendmsg(message);
+    }
 
     public static void sendmsg(Message msg) {
         try {

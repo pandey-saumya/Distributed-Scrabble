@@ -1179,25 +1179,17 @@
             <children>
                 <Button mnemonicParsing="false" onAction="#help" prefHeight="45.0" prefWidth="170.0" text="Help">
                     <VBox.margin>
-                        <Insets left="15.0" top="20.0"/>
+                        <Insets left="15.0" top="20.0" />
                     </VBox.margin>
                 </Button>
-                <Button layoutX="25.0" layoutY="301.0" mnemonicParsing="false" onAction="#returnHall" prefHeight="45.0"
-                        prefWidth="170.0" text="Give Up">
+                <Button layoutX="25.0" layoutY="301.0" mnemonicParsing="false" onAction="#returnHall" prefHeight="45.0" prefWidth="170.0" text="Exit">
                     <VBox.margin>
-                        <Insets left="15.0" top="20.0"/>
+                        <Insets left="15.0" top="20.0" />
                     </VBox.margin>
                 </Button>
-                <Button layoutX="35.0" layoutY="301.0" mnemonicParsing="false" onAction="#confirm" prefHeight="45.0"
-                        prefWidth="170.0" text="Accept Word">
+                <Button layoutX="35.0" layoutY="301.0" mnemonicParsing="false" onAction="#vote" prefHeight="45.0" prefWidth="170.0" text="Vote">
                     <VBox.margin>
-                        <Insets left="15.0" top="20.0"/>
-                    </VBox.margin>
-                </Button>
-                <Button layoutX="45.0" layoutY="301.0" mnemonicParsing="false" onAction="#confirm" prefHeight="45.0"
-                        prefWidth="170.0" text="Reject Word">
-                    <VBox.margin>
-                        <Insets left="15.0" top="20.0"/>
+                        <Insets left="15.0" top="20.0" />
                     </VBox.margin>
                 </Button>
             </children>

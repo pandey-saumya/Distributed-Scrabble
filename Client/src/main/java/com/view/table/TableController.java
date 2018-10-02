@@ -616,6 +616,22 @@ public class TableController implements Initializable{
         });
     }
 
+    public void refreshPlayerScore(String name, int score){
+        String playerName = name;
+        String Score = String.valueOf(score);
+        Platform.runLater(()->{
+            if (player1Name.getText().equals(name)){
+                player1Score.setText(Score);
+            }else if (player2Name.getText().equals(name)){
+                player2Score.setText(Score);
+            }else if (player3Name.getText().equals(name)){
+                player3Score.setText(Score);
+            }else if (player4Name.getText().equals(name)){
+                player4Score.setText(Score);
+            }
+        });
+    }
+
     @FXML
     private void confirm() {
         //TODO - send to server (playerStatus = inGame, playerAction = game_content)
@@ -624,13 +640,29 @@ public class TableController implements Initializable{
     @FXML
     private void pass(){
         //TODO - send to server (playerStatus = inGame, playerAction = pass)
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you pass your turn?" , ButtonType.YES, ButtonType.NO);
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.YES) {
+            Game.pass(1);
+        }
+        else{
+            Game.pass(0);
+        }
     }
 
     @FXML
-    private void help(){
-        //TODO - UI - <help>
-    }
+    private void vote(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you accept the word?" , ButtonType.YES, ButtonType.NO);
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.YES) {
+            Game.voting(1);
 
+        }
+        else{
+            Game.voting(0);
+            yourScore();
+        }
+    }
     // return to game hall
     public void returnHall() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -639,11 +671,29 @@ public class TableController implements Initializable{
         alert.setContentText("Are you sure you want to exit this game ?");
         Optional result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
+            yourScore();
+        }
+    }
+
+    public void yourScore() {
+        int score = 0;
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Your Score");
+        alert.setHeaderText("Confirmation");
+        alert.setContentText("This is your score" + score);
+        Optional result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
             HallController.getStage().close();
             Game.getPrimaryStage().show();
             Game.returnToHall();
         }
     }
+
+    @FXML
+    private void help(){
+        //TODO - UI - <help>
+    }
+
 
     // Minimize Window
     public void minimizeWindow(){

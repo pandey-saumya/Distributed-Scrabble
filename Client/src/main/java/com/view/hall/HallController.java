@@ -1,12 +1,11 @@
 package com.view.hall;
 
 import com.Game;
-import com.model.player.Player;
+import com.model.UIplayer.UIplayer;
 import com.view.table.TableController;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,7 +17,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -34,7 +32,7 @@ public class HallController implements Initializable {
 
     //<editor-fold defaultstate="collapsed" desc="// initialize for Game Hall (Do not open)" >
     @FXML private BorderPane borderPane;
-    @FXML private TableView<Player> playerList;
+    @FXML private TableView<UIplayer> playerList;
     @FXML private TableColumn username;
     @FXML private TableColumn status;
     @FXML private void handleButton1() throws IOException {enterTable(1);}
@@ -100,7 +98,7 @@ public class HallController implements Initializable {
 
     public static final int HallWidth = 1100;
     public static final int HallHeight = 800;
-    public static ObservableList<Player> data = FXCollections.observableArrayList();
+    public static ObservableList<UIplayer> data = FXCollections.observableArrayList();
     public static TableController tableController;
     private double xOffset;
     private double yOffset;
@@ -125,7 +123,7 @@ public class HallController implements Initializable {
         data.clear();
     }
 
-    public void updateStatus(Player player) {
+    public void updateStatus(UIplayer player) {
         data.add(player);
     }
 

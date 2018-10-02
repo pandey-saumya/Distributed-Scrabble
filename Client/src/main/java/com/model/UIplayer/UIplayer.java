@@ -1,13 +1,12 @@
-package com.model.player;
+package com.model.UIplayer;
 
 import javafx.beans.property.SimpleStringProperty;
 
-
-public class Player {
+public class UIplayer {
     private final SimpleStringProperty username;
     private final SimpleStringProperty status;
 
-    public Player(String username, String status){
+    public UIplayer(String username, String status){
         this.username = new SimpleStringProperty(username);
         this.status = new SimpleStringProperty(status);
     }
@@ -38,3 +37,4 @@ public class Player {
 
 
 }
+

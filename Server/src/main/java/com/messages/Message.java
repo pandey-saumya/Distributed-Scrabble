@@ -1,14 +1,13 @@
 package com.messages;
 
+import com.game.Player;
+
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 
 public class Message implements Serializable{
     private String[] board;
-    private Map<String,Integer> playerScore;
     private Map<String,String> connectedClients;
     private Map<Integer,Integer> createdGames;
     private Map<String,String> playerList;
@@ -22,9 +21,12 @@ public class Message implements Serializable{
     private String gameWord;
     private String clientName;
     private String feedBackMessage;
+    private Player player;
     private int clientNum;
     private int tableId;
     private int votingNum;
+    private int score;
+    private int passNum;
     private static final long serialVersionUID = 1L;
 
 
@@ -32,9 +34,9 @@ public class Message implements Serializable{
         return gameStatus;
     }
 
-    public void setPlayerScore(Map<String,Integer> playerScore){
-        this.playerScore = playerScore;
-    }
+//    public void setPlayerScore(Map<String,Integer> playerScore){
+//        this.playerScore = playerScore;
+//    }
 
     public Map<String,Integer> getPlayerScore(){
         return getPlayerScore();
@@ -58,6 +60,14 @@ public class Message implements Serializable{
 
     public void setClientNum(int clientNum) {
         this.clientNum = clientNum;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     public PlayerStatus getPlayerStatus() {
@@ -130,6 +140,22 @@ public class Message implements Serializable{
 
     public void setVotingNum(int votingNum) {
         this.votingNum = votingNum;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public int getPassNum() {
+        return passNum;
+    }
+
+    public void setPassNum(int passNum) {
+        this.passNum = passNum;
     }
 
     public Map<String, String> getConnectedClients() {
