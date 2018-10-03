@@ -53,7 +53,7 @@
         </GridPane>
     </top>
     <center>
-        <GridPane alignment="CENTER"  hgap="1.0" vgap="1.0" stylesheets="@../css/application.css"
+        <GridPane fx:id="playerBoard" alignment="CENTER"  hgap="1.0" vgap="1.0" stylesheets="@../css/application.css"
                   BorderPane.alignment="CENTER">
             <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="30.0" minWidth="30.0" prefWidth="30.0"/>
