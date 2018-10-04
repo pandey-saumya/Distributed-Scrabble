@@ -1,19 +1,7 @@
-Implementation Left
+Implementation
 
-	1. Single alphabet entry handling -liping
-	2. On mouse event for selecting the word -liping
-	3. Add onclick function for confirm and pass functionality
-	4. Adjacent word handling - saumya
-	5. Scoring logic complete - liping
-	6. Voting logic half done add cases GameRoom.java and Pass event conditions in same file - arushi and snigdha
-	7. Handle pass event bugs- one person exits entire game should close  arushi and snigdha
-	8. Call vote function on vote buttons  arushi and snigdha
-	9. Invite game (Future work) 
-	10. Add timer in game room (Future work)
-	11. Word selection - liping
-	12. Each player in the room can begin only when 2 people are there-Saumya
-	13. Bug for return hall functionality- Saumya 
-	14. Game end condition  arushi and snigdha
-	15. Game result display 
-	16. Assign turns 
+Refer GameRoom.java for comments 
+Bug fixes for Invite feature and start game left
+Multiple games together left
+
 	
