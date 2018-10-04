@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Message implements Serializable{
 
-    private String[] board;
+    private String[][] board;
     private Map<String,Integer> playerScore;
     private Map<String,String> connectedClients;
     private Map<Integer,Integer> createdGames;
@@ -14,7 +14,7 @@ public class Message implements Serializable{
     private GameStatus gameStatus;
     private PlayerStatus playerStatus;
     private String gameCharacter;
-    private int gameLocation;
+    private int[] gameLocation;
     private String gameWord;
     private String clientName;
     private String feedBackMessage;
@@ -46,11 +46,11 @@ public class Message implements Serializable{
         return playerScore;
     }
 
-    public void setBoard(String[] board) {
+    public void setBoard(String[][] board) {
         this.board = board;
     }
 
-    public String[] getBoard() {
+    public String[][] getBoard() {
         return board;
     }
     public void setGameStatus(GameStatus gameStatus) {
@@ -89,11 +89,11 @@ public class Message implements Serializable{
         this.gameCharacter = gameCharacter;
     }
 
-    public int getGameLocation() {
+    public int[] getGameLocation() {
         return gameLocation;
     }
 
-    public void setGameLocation(int gameLocation) {
+    public void setGameLocation(int[] gameLocation) {
         this.gameLocation = gameLocation;
     }
 

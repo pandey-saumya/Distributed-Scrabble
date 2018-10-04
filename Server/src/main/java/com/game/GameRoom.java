@@ -59,7 +59,7 @@ public class GameRoom{
     private int totalTurn = 0;
     private boolean ending = false;
     private Map<String, String> playerStatus = new HashMap();
-    private String[] board;
+    private String[][] board;
     private Map<String, Integer> playerScore = new HashMap();
     private boolean gameStart = false;
     private ArrayList<String> sequenceList = new ArrayList<>();
@@ -79,17 +79,20 @@ public class GameRoom{
     }
 
     public void initialBoard() {
-        board = new String[400];
-        for (int i = 0; i < 400; i++) {
-            board[i] = "";
+        board = new String[20][20];
+        for(int i=0;i<20;i++){
+            for(int j=0;j<20;j++){
+                board[i][j]="";
+            }
         }
     }
 
-    public void addCharacter(int index, String character) {
-        board[index] = character;
+    public void addCharacter(int[] position, String character) {
+        board[position[0]][position[1]] = character;
+        System.out.println("Insert "+character+" at position ("+position[0]+","+position[1]+")");
     }
 
-    public synchronized String[] getBoard() {
+    public synchronized String[][] getBoard() {
         return board;
     }
 

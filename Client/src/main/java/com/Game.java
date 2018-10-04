@@ -140,11 +140,11 @@ public class Game extends Application {
         sendmsg(message);
     }
 
-    public static void sendCharacter(int index, String character, String word) {
+    public static void sendCharacter(int[] position, String character, String word) {
         Message message = new Message();
         message.setPlayerStatus(PlayerStatus.IN_GAME);
         message.setPlayerAction(PlayerAction.SET_CHARACTER);
-        message.setGameLocation(index);
+        message.setGameLocation(position);
         message.setGameCharacter(character);
         message.setGameWord(word);
         sendmsg(message);
@@ -202,32 +202,32 @@ public class Game extends Application {
         message.setGameStatus(GameStatus.ALL_READY);
         sendmsg(message);
     }
-    public static String horizontal(int location,String[] board){
-        String word = board[location];
-        int index = location;
-        while (((index-1) % 20 != 0)&&(!board[index-1].equals(""))){
-            index = index -1;
-            word = board[index] +word;
-        }
-        index = location;
-        while (((index+1 % 20) != 0) && (!board[index+1].equals(""))){
-            index = index+1;
-            word = word+board[index];
-        }
-        return word;
-    }
-    public static String vertical(int location,String[] board){
-        String word = board[location];
-        int index = location;
-        while (!(index < 20) && (!board[index-20].equals(""))){
-            index = index - 20;
-            word = board[index] + word;
-        }
-        index = location;
-        while (!(index >379) && (!board[index+20].equals(""))){
-            index = index + 20;
-            word = board[index] +word;
-        }
-        return word;
-    }
+//    public static String horizontal(int location,String[] board){
+//        String word = board[location];
+//        int index = location;
+//        while (((index-1) % 20 != 0)&&(!board[index-1].equals(""))){
+//            index = index -1;
+//            word = board[index] +word;
+//        }
+//        index = location;
+//        while (((index+1 % 20) != 0) && (!board[index+1].equals(""))){
+//            index = index+1;
+//            word = word+board[index];
+//        }
+//        return word;
+//    }
+//    public static String vertical(int location,String[] board){
+//        String word = board[location];
+//        int index = location;
+//        while (!(index < 20) && (!board[index-20].equals(""))){
+//            index = index - 20;
+//            word = board[index] + word;
+//        }
+//        index = location;
+//        while (!(index >379) && (!board[index+20].equals(""))){
+//            index = index + 20;
+//            word = board[index] +word;
+//        }
+//        return word;
+//    }
 }
