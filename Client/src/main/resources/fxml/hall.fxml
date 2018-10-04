@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
@@ -398,14 +397,14 @@
                         </Button>
                     </children>
                 </HBox>
-            <Label prefHeight="46.0" prefWidth="206.0" text="Game Arena" textFill="#f89406">
-               <font>
-                  <Font name="Algerian" size="32.0" />
-               </font>
-               <GridPane.margin>
-                  <Insets left="20.0" />
-               </GridPane.margin></Label>
-         </children>
-      </GridPane>
-   </top>
+                <Label prefHeight="46.0" prefWidth="201.0" text="Game Hall" textFill="#f89406">
+                    <font>
+                        <Font name="Algerian" size="32.0" />
+                    </font>
+                    <GridPane.margin>
+                        <Insets left="20.0" />
+                    </GridPane.margin></Label>
+            </children>
+        </GridPane>
+    </top>
 </BorderPane>

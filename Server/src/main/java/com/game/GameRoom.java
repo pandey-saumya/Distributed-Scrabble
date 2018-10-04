@@ -8,10 +8,37 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+
+/*
+The approach is almost same to having player object track everything
+The game room is an object which has all the attribtes like voting, turns and number of players using hashmap and a player list which contains
+the player object(playername,status)using hashmap for each connection made with the server
+Then through this game room object we track everything in the game like status,voting,pass etc,.
+For invite we track the game room object using table id and the playerlist hashmap. Get the status of the players with status online and send invitation
+
+For multiple games we just need to track multiple game room objects in a list and ensure concurrency by passing in a synchronized method.*/
+
+
+/*
+Turn logic
+In the player list we assign the turn to the first player in the list and then put a condition by adding synchronized method that no other person can
+play on the grid at the same time. On clicking confirm the turn is passed to the next player in the list
+ */
+
+
+/*
+Voting logic
+logic for counting votes is getting the number of votes from the game room corresponding to each player
+and comparing with the number of players in the game
+if number of votes = number players we accept the word and update the score by broadcasting the scores else reject it and zero score is addded to the current score */
+
+
+
+// GhostRider9 ADD COMMENTS FOR SCORING LOGIC HERE
+/*
+Score calculation
+ */
 
 public class GameRoom{
     // assuming there are up to 4 players in each game room
@@ -25,141 +52,193 @@ public class GameRoom{
     private OutputStream out;
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
-    private int votingNum = 0;
+    private int votingYes = 0;
     private int spaceRemain = 400;
-    private int turnNum = 0;
+    private int votingNum = 0;
     private int passNum = 0;
     private int totalTurn = 0;
-    private Map<String,String> playerStatus = new HashMap();
+    private boolean ending = false;
+    private Map<String, String> playerStatus = new HashMap();
     private String[] board;
-    private Map<String,Integer> playerScore = new HashMap();
+    private Map<String, Integer> playerScore = new HashMap();
+    private boolean gameStart = false;
+    private ArrayList<String> sequenceList = new ArrayList<>();
+
     public GameRoom(int clientNum, int tableId) {
         addPlayer(clientNum);
         initialBoard();
         this.tableId = tableId;
     }
-    public void initialGame(){
+
+    public synchronized void initialGame() {
+        addOneTurn();
         for (String key : playerStatus.keySet()) {
             playerStatus.replace(key, "NotTurn");
         }
-        String[] keys = playerStatus.keySet().toArray(new String[0]);
-        Random random = new Random();
-        String randomKey = keys[random.nextInt(keys.length)];
-        playerStatus.replace(randomKey,"Turn");
-    }
-    public void initialBoard(){
-        board = new String[400];
-        for (int i =0; i<400;i++){
-            board[i] = "0";
-        }
-    }
-    public void addCharacter(int index,String character){
-        board[index] = character;
-    }
-    public String[] getBoard(){
-        return board;
-    }
-    public void setPlayerScore(String name,Integer score){
-        playerScore.replace(name,score);
-    }
-    public Map<String,Integer> getPlayerScore(){
-        return playerScore;
-    }
-    public void addPlayer(int clientNum){
-        List<EachConnection> clients = ServerState.getClientInstance().getConnectedClients();
-        for (EachConnection client : clients){
-            if (client.getClientNum() == clientNum){
-                playerList[numOfPlayer] = client;
-                playerStatus.put(client.getClientName(),"NotReady");
-                playerScore.put(client.getClientName(),0);
-            }
-        }
-        this.numOfPlayer+=1;
+        playerStatus.replace(playerList[0].getClientName(), "Turn");
     }
 
-    public void deletePlayer(int clientNum,String name){
+    public void initialBoard() {
+        board = new String[400];
+        for (int i = 0; i < 400; i++) {
+            board[i] = "";
+        }
+    }
+
+    public void addCharacter(int index, String character) {
+        board[index] = character;
+    }
+
+    public synchronized String[] getBoard() {
+        return board;
+    }
+
+    public void setPlayerScore(String name, Integer score) {
+        playerScore.replace(name, score);
+    }
+
+    public synchronized Map<String, Integer> getPlayerScore() {
+        return playerScore;
+    }
+
+    public synchronized void addPlayer(int clientNum) {
+        List<EachConnection> clients = ServerState.getClientInstance().getConnectedClients();
+        for (EachConnection client : clients) {
+            if (client.getClientNum() == clientNum) {
+                playerList[numOfPlayer] = client;
+                playerStatus.put(client.getClientName(), "NotReady");
+                playerScore.put(client.getClientName(), 0);
+                // add name to the sequence list
+                sequenceList.add(client.getClientName());
+            }
+        }
+        this.numOfPlayer += 1;
+    }
+
+    public synchronized int getScore(String name) {
+        return playerScore.get(name);
+    }
+
+    public synchronized void deletePlayer(int clientNum, String name) {
         int index = indexOf(clientNum);
         playerStatus.remove(name);
         playerScore.remove(name);
-        if (index != -1){
+        this.numOfPlayer -= 1;
+        // remove name from the sequence list
+        sequenceList.remove(name);
+        if (index != -1) {
             playerList[index] = null;
-            for (int x = 0; x < numOfPlayer ; x++) {
-                if(x>=index){
-                    playerList[x] = playerList[x+1];
+            for (int x = 0; x < numOfPlayer; x++) {
+                if (x >= index) {
+                    playerList[x] = playerList[x + 1];
                 }
             }
         }
-        this.numOfPlayer-=1;
     }
 
-    public void playerReady(String name){
-        playerStatus.replace(name,"Ready");
+    public synchronized void playerReady(String name) {
+        playerStatus.replace(name, "Ready");
     }
 
-    public void playerTurn(String name) {
-        playerStatus.replace(name,"Turn");
+    public synchronized void turnPass(String name) {
+        int index = sequenceList.indexOf(name) + 1;
+        if (index > numOfPlayer - 1) {
+            index = 0;
+        }
+        playerTurn(sequenceList.get(index));
+    }
+
+    public synchronized void playerTurn(String name) {
+        playerStatus.replace(name, "Turn");
         for (String key : playerStatus.keySet()) {
             if (!key.equals(name)) {
                 playerStatus.replace(key, "NotTurn");
             }
         }
     }
-    public Map getPlayerStatus(){
+
+    public synchronized Map getPlayerStatus() {
         return playerStatus;
     }
-    private int indexOf(int clientNum){
-        for (int i = 0; i <numOfPlayer ; i++) {
-            if (playerList[i].getClientNum() == clientNum){
+
+    private int indexOf(int clientNum) {
+        for (int i = 0; i < numOfPlayer; i++) {
+            if (playerList[i].getClientNum() == clientNum) {
                 return i;
             }
         }
         return -1;
     }
-//TODO VOTING RESULT CONDITIONS ADD HERE
-   /* public String votingResult(){
-        if (turnNum == getturnnumber  && votingNum == MAXIMUM_PLAYER_NUMBER && getAcceptcount && getRejectcount){
-            setTurnNum(0);
-            return "Accept";
-        }else if (turnNum == getturnnumber  && votingNum == !MAXIMUM_PLAYER_NUMBER && getAcceptcount && getRejectcount){
-            setTurnNum(0);
-            return "Reject";
-        }else{
-            return "inProgress";
-        }
-    }*/
-
-//ADD PASS RESULT CONDITIONS HERE. BELOW IS ONE CASE
-    public String passResult(){
-        if (turnNum == 4 && passNum == MAXIMUM_PLAYER_NUMBER){
-            setTurnNum(0);
-            return "GameEnd";
-        }else if (turnNum == 4 && passNum != MAXIMUM_PLAYER_NUMBER){
-            setTurnNum(0);
-            return "GameContinue";
-        }else{
+    //ADDING synchronized voting result here
+    /* logic for counting votes is getting the number of votes from the game room corresponding to each player
+       and comparing with the number of players in the game
+                if number of votes = number players we accept the word and update the score else reject it
+     */
+    public synchronized String votingResult() {
+        if (votingNum == numOfPlayer) {
+            if (votingYes == numOfPlayer) {
+                return "Accept";
+            } else {
+                return "Reject";
+            }
+        } else {
             return "inProgress";
         }
     }
-
-
-
-    public boolean gameEnd(){
-        if (numOfPlayer < MINIMUM_PLAYER_NUMBER || spaceRemain == 0){
+    /*
+    Passing logic
+    if the number of passes is equal to the number of players in the game, game ends
+     */
+    public synchronized String passResult() {
+        if (passNum == numOfPlayer) {
+            return "GameEnd";
+        } else {
+            return "GameContinue";
+        }
+    }
+    /*
+   Right now taken just 2 conditions if num of players is 1 or number od tiles remaining is 0 then end game . Think more
+     */
+    public synchronized boolean gameEnd() {
+        if (numOfPlayer == 1 || spaceRemain == 0) {
             return true;
         }
         return false;
     }
 
-    //TODO gameResult display format
-    public void gameResult(){
-
+    //TODO gameResult format here
+    /*
+    for game result get the playerscore of each player and compare the scores
+     */
+    public synchronized String gameResult() {
+        String winner = "";
+        int max = 0;
+        List<String> winnerList = new ArrayList<>();
+        for (String key : playerScore.keySet()) {
+            if (max < playerScore.get(key)) {
+                max = playerScore.get(key);
+            }
+        }
+        for (String key : playerScore.keySet()) {
+            if (playerScore.get(key) == max) {
+                winnerList.add(key);
+            }
+        }
+        for (int i = 0; i < winnerList.size(); i++) {
+            winner = winner + winnerList.get(i) + " & ";
+        }
+        winner = winner.substring(0,winner.length()-3);
+        ending = true;
+        return winner;
     }
+
+
 
     public int getTableId() {
         return tableId;
     }
 
-    public int getNumOfPlayer() {
+    public synchronized int getNumOfPlayer() {
         return numOfPlayer;
     }
 
@@ -183,8 +262,8 @@ public class GameRoom{
         return spaceRemain;
     }
 
-    public void setSpaceRemain(int spaceRemain) {
-        this.spaceRemain = spaceRemain;
+    public void SpaceRemain() {
+        this.spaceRemain -= 1;
     }
 
     public EachConnection[] getPlayerList() {
@@ -199,26 +278,15 @@ public class GameRoom{
         return votingNum;
     }
 
-    public void voting(int votingNum) {
-        this.votingNum += votingNum;
-        this.turnNum += 1;
+    public synchronized void voting(boolean voting) {
+        this.votingNum += 1;
+        if (voting){
+            this.votingYes+= 1;
+        }
     }
 
-    public int getTurnNum() {
-        return turnNum;
-    }
-
-    public void setTurnNum(int turnNum) {
-        this.turnNum = turnNum;
-    }
-
-    public int getPassNum() {
-        return passNum;
-    }
-
-    public void pass(int passNum) {
-        this.passNum += passNum;
-        this.turnNum += 1;
+    public synchronized void pass() {
+        this.passNum += 1;
     }
 
     public int getTotalTurn() {
@@ -229,7 +297,43 @@ public class GameRoom{
         this.totalTurn = totalTurn;
     }
 
-    public void addOneTurn(){
+    public void addOneTurn() {
         this.totalTurn += 1;
+    }
+
+    public boolean isGameStart() {
+        return gameStart;
+    }
+
+    public void setGameStart(boolean gameStart) {
+        this.gameStart = gameStart;
+    }
+
+    public int getVotingYes() {
+        return votingYes;
+    }
+
+    public void setVotingYes(int votingYes) {
+        this.votingYes = votingYes;
+    }
+
+    public void setVotingNum(int votingNum) {
+        this.votingNum = votingNum;
+    }
+
+    public int getPassNum() {
+        return passNum;
+    }
+
+    public void setPassNum(int passNum) {
+        this.passNum = passNum;
+    }
+
+    public boolean isEnding() {
+        return ending;
+    }
+
+    public void setEnding(boolean ending) {
+        this.ending = ending;
     }
 }

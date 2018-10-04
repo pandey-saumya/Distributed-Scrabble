@@ -10,22 +10,21 @@ import com.view.table.TableController;
 import com.view.username.UsernameController;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tab;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Listener extends Thread {
 
-    private static boolean nameValid;
+
     private ObjectInputStream ois;
-    private static String name;
-    private static Message msg = null;
+    public static String name;
+    public static Message msg = null;
     public Listener(ObjectInputStream ois) {
         this.ois = ois;
     }
@@ -48,7 +47,9 @@ public class Listener extends Thread {
                     case IN_HALL:
                         if (msg.getPlayerAction() == PlayerAction.JOIN_TABLE){
                             if ((msg.getFeedBackMessage()!=null) && (msg.getFeedBackMessage().equals("ValidTable"))) {
-                                Platform.runLater(()-> HallController.getInstance().showTable());
+                                Platform.runLater(()-> {
+                                    HallController.getInstance().showTable();
+                                });
                             }
                             else{
                                 HallController.getInstance().joinTableFailure();
@@ -72,8 +73,20 @@ public class Listener extends Thread {
                                 HallController.getInstance().refreshTableNum(tableKey, playerInTable);
                             }
                         }
-                        if (msg.getPlayerAction() == PlayerAction.INVITE){
-
+                        if (msg.getPlayerAction() == PlayerAction.INVITE_PLAYER){
+                            Platform.runLater(()->{
+                                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                                alert.setTitle("New Message");
+                                alert.setHeaderText("An invitation has been received.");
+                                alert.setContentText("Do you want to join the game?");
+                                ButtonType YES = new ButtonType("YES");
+                                ButtonType NO = new ButtonType("NO");
+                                alert.getButtonTypes().setAll(YES, NO);
+                                Optional<ButtonType> result = alert.showAndWait();
+                                if (result.get() == YES) {
+                                    Game.entryTable(msg.getTableId());
+                                }
+                            });
                         }
                         break;
                     case IN_ROOM:
@@ -87,8 +100,14 @@ public class Listener extends Thread {
                                 TableController.getInstance().refreshPlayerStatus(key_player,playerStatus);
                             }
                         }
-                        if (msg.getGameStatus() == GameStatus.ALL_READY){
-                            //TODO ADD TIMER -game will start in x sec.
+                        if (msg.getPlayerAction() == PlayerAction.INVITE){
+                            Set<String> keys_invitePlayer = msg.getPlayerList().keySet();
+                            Iterator<String> iterator_invitePlayer = keys_invitePlayer.iterator();
+                            List<String> inviteList = new ArrayList<>();
+                            while (iterator_invitePlayer.hasNext()) {
+                                String key_player = iterator_invitePlayer.next();
+                                inviteList.add(key_player);
+                            }
                         }
                         if (msg.getGameStatus() == GameStatus.ALL_READY){
                             Game.gameStart();
@@ -98,64 +117,61 @@ public class Listener extends Thread {
                         break;
                     case IN_GAME:
                         if (msg.getPlayerAction() == PlayerAction.GAME_CONTENT) {
+                            // Player name & turn
                             Set<String> keys_player = msg.getPlayerList().keySet();
                             Iterator<String> iterator_player = keys_player.iterator();
                             while (iterator_player.hasNext()) {
                                 String key_player = iterator_player.next();
+                                boolean turn = false;
                                 if (msg.getPlayerList().get(key_player).equals("Turn")){
-                                    Game.turn = true;
+                                    turn = true;
                                 }
                                 else{
-                                    Game.turn = false;
+                                    turn = false;
                                 }
+                                TableController.getInstance().refreshPlayerTurn(key_player,turn);
                             }
+                            if (msg.getPlayerList().get(name).equals("Turn")){
+                                Game.turn = true;
+                            }
+                            else{
+                                Game.turn = false;
+                            }
+                            // Player name & score
                             Set<String> keys_score = msg.getPlayerScore().keySet();
                             Iterator<String> iterator_score = keys_score.iterator();
                             while (iterator_score.hasNext()) {
                                 String key_score = iterator_score.next();
+                                String score = msg.getPlayerScore().get(key_score).toString();
+                                TableController.getInstance().refreshPlayerScore(key_score,score);
                             }
+                            TableController.getInstance().setBoard(msg.getBoard());
                         }
-                        msg.getBoard();
+                        if(msg.getPlayerAction()== PlayerAction.VOTING){
+                            String name = msg.getClientName();
+                            String word = msg.getGameWord();
+                            TableController.getInstance().voting(name,word);
+                        }
+                        if (msg.getGameStatus()==GameStatus.ENDING){
+                            String winner = msg.getGameResult();
+                            //show winner;
+                            Platform.runLater(()->{
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle("Game Result");
+                                alert.setHeaderText("Winner");
+                                alert.setContentText(winner);
+                                alert.showAndWait();
+                                HallController.getStage().close();
+                                Game.getPrimaryStage().show();
+                                Game.returnToHall();
+                            });
+                        }
                         break;
                 }
-                /*StringTokenizer st = new StringTokenizer(msg, "|");
-                String operation = st.nextToken();
-                String msg = st.nextToken();
-                if (operation.equals("hallplayer")){
-                    //TODO referesh playerlist
-                }
-                if (operation.equals("halltable")){
-                    //TODO referesh table list
-                }
-                if (operation.equals("gameplay")){
-                    //TODO referesh game playerlist
-                }
-                if (operation.equals("voting")){
-                    Game.voting(msg);
-                }
-                if (operation.equals("gamestart")){
-                    //TODO show game start message
-                }
-                if (operation.equals("turn")){
-                    if (msg.equals("yourturn")){
-                        Game.turn = true;
-                    }
-                    else{
-                        Game.turn =false;
-                    }
-                }*/
             }
-        } catch (SocketException e) {
-            LoginController.getInstance().connectionLost("Connection lost!");
         } catch (Exception e) {
             e.printStackTrace();
+            LoginController.getInstance().connectionLost("Connection lost!");
         }
     }
-    public Message getMessage(){
-        return msg;
-    }
-    public static boolean checkNameValid(){
-        return nameValid;
-    }
-
 }

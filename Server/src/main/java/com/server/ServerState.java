@@ -15,6 +15,7 @@ public class ServerState {
     private static ServerState gameInstance;
     private List<EachConnection> connectedClients;
     private List<GameRoom> createdGames;
+
     public static ArrayList UserList = new ArrayList();
 
     private ServerState() {
@@ -34,7 +35,7 @@ public class ServerState {
         createdGames.add(game);
     }
 
-    public synchronized void clientDisconnected(GameRoom game) {
+    public synchronized void gameDisconnected(GameRoom game) {
         createdGames.remove(game);
     }
 
@@ -61,4 +62,5 @@ public class ServerState {
     public synchronized List<EachConnection> getConnectedClients() {
         return connectedClients;
     }
+
 }

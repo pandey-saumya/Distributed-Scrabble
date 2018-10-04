@@ -3,6 +3,7 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -59,6 +60,38 @@
                   <Insets left="125.0" top="30.0" />
                </VBox.margin>
             </Button>
+            <ListView fx:id="inviteList" prefHeight="200.0" prefWidth="400.0">
+               <VBox.margin>
+                  <Insets left="40.0" right="40.0" top="40.0" />
+               </VBox.margin></ListView>
+            <HBox fx:id="inviteBox" prefHeight="100.0" prefWidth="200.0">
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+               <children>
+                  <Label prefHeight="31.0" prefWidth="71.0" text="Invite: ">
+                     <HBox.margin>
+                        <Insets left="20.0" top="30.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="playerName" layoutX="30.0" layoutY="40.0" prefHeight="31.0" prefWidth="159.0" text="PlayerName">
+                     <HBox.margin>
+                        <Insets top="30.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Button mnemonicParsing="false" onAction="#confirm" prefHeight="42.0" prefWidth="106.0" style="-fx-font-size: 15px bold" styleClass="radiusBtn" stylesheets="@../css/global.css" text="Confirm">
+                     <HBox.margin>
+                        <Insets left="10.0" top="25.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
          </children>
          <padding>
             <Insets top="300.0" />

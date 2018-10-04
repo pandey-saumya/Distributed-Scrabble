@@ -13,15 +13,16 @@ public class Message implements Serializable{
     private Map<Integer,Integer> createdGames;
     private Map<String,String> playerList;
     private Map<String,String> gameInfo;
-    private String[] gameResult;
+    private String gameResult;
     private PlayerAction playerAction;
     private GameStatus gameStatus;
     private PlayerStatus playerStatus;
-    private Character gameCharacter;
-    private String gameLocation;
+    private String gameCharacter;
+    private int gameLocation;
     private String gameWord;
     private String clientName;
     private String feedBackMessage;
+    private boolean votingResult;
     private int clientNum;
     private int tableId;
     private int votingNum;
@@ -35,6 +36,8 @@ public class Message implements Serializable{
     public void setPlayerScore(Map<String,Integer> playerScore){
         this.playerScore = playerScore;
     }
+
+
 
     public Map<String,Integer> getPlayerScore(){
         return getPlayerScore();
@@ -76,19 +79,19 @@ public class Message implements Serializable{
         this.playerAction = playerAction;
     }
 
-    public Character getGameCharacter() {
+    public String getGameCharacter() {
         return gameCharacter;
     }
 
-    public void setGameCharacter(Character gameCharacter) {
+    public void setGameCharacter(String gameCharacter) {
         this.gameCharacter = gameCharacter;
     }
 
-    public String getGameLocation() {
+    public int getGameLocation() {
         return gameLocation;
     }
 
-    public void setGameLocation(String gameLocation) {
+    public void setGameLocation(int gameLocation) {
         this.gameLocation = gameLocation;
     }
 
@@ -164,11 +167,19 @@ public class Message implements Serializable{
         this.gameInfo = gameInfo;
     }
 
-    public String[] getGameResult() {
+    public boolean getVotingResult() {
+        return votingResult;
+    }
+
+    public void setVotingResult(boolean votingResult) {
+        this.votingResult = votingResult;
+    }
+
+    public String getGameResult() {
         return gameResult;
     }
 
-    public void setGameResult(String[] gameResult) {
+    public void setGameResult(String gameResult) {
         this.gameResult = gameResult;
     }
 }

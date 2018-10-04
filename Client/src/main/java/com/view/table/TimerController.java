@@ -18,7 +18,7 @@ public class TimerController implements Initializable{
     private double xOffset;
     private double yOffset;
     private static TimerController instance;
-    private int count = 3;
+    private int count = 5;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

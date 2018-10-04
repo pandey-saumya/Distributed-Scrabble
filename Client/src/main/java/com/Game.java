@@ -57,7 +57,6 @@ public class Game extends Application {
     public static boolean turn = false;
     public static Listener m1;
 
-
     public void start(Stage primaryStage) throws Exception {
         primaryStageObj = primaryStage;
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/login.fxml"));
@@ -77,8 +76,8 @@ public class Game extends Application {
         launch(args);
     }
 
-    public static void connect(String host, int port){
-        try{
+    public static void connect(String host, int port) {
+        try {
             socket = new Socket(host, port);
             LoginController.getInstance().showUsernameScene();
             out = socket.getOutputStream();
@@ -87,7 +86,7 @@ public class Game extends Application {
             ois = new ObjectInputStream(in);
             m1 = new Listener(ois);
             m1.start();
-        }catch (IOException e){
+        } catch (IOException e) {
             LoginController.getInstance().loginFailure("Could not connect to server");
         }
     }
@@ -120,45 +119,77 @@ public class Game extends Application {
     }
 
 
-    public static String randomeUser(){
+    public static String randomeUser() {
         Random rand = new Random();
         int i;
         i = rand.nextInt(namepool.length);
-        return(namepool[i]);
+        return (namepool[i]);
     }
 
-    public static void invite(){
+    public static void invite() {
         Message message = new Message();
         message.setPlayerStatus(PlayerStatus.IN_ROOM);
         message.setPlayerAction(PlayerAction.INVITE);
         sendmsg(message);
     }
-    public static void invitePlayer(String name){
+
+    public static void pass() {
+        Message message = new Message();
+        message.setPlayerStatus(PlayerStatus.IN_GAME);
+        message.setPlayerAction(PlayerAction.PASS);
+        sendmsg(message);
+    }
+
+    public static void sendCharacter(int index, String character, String word) {
+        Message message = new Message();
+        message.setPlayerStatus(PlayerStatus.IN_GAME);
+        message.setPlayerAction(PlayerAction.SET_CHARACTER);
+        message.setGameLocation(index);
+        message.setGameCharacter(character);
+        message.setGameWord(word);
+        sendmsg(message);
+    }
+
+    public static void voting(boolean votingResult,String name,String word) {
+        Message message = new Message();
+        message.setPlayerStatus(PlayerStatus.IN_GAME);
+        message.setPlayerAction(PlayerAction.VOTING);
+        message.setClientName(name);
+        message.setGameWord(word);
+        message.setVotingResult(votingResult);
+        sendmsg(message);
+    }
+
+    public static void invitePlayer(String name) {
         Message message = new Message();
         message.setPlayerStatus(PlayerStatus.IN_ROOM);
         message.setPlayerAction(PlayerAction.INVITE_PLAYER);
         message.setClientName(name);
         sendmsg(message);
     }
-    public static void ready(){
+
+    public static void ready() {
         Message message = new Message();
         message.setPlayerStatus(PlayerStatus.IN_ROOM);
         message.setPlayerAction(PlayerAction.READY);
         sendmsg(message);
     }
-    public static void returnToHall(){
+
+    public static void returnToHall() {
         Message message = new Message();
         message.setPlayerStatus(PlayerStatus.IN_ROOM);
         message.setPlayerAction(PlayerAction.RETURN_HALL);
         sendmsg(message);
     }
-    public static void setUsername(String username){
+
+    public static void setUsername(String username) {
         Message message = new Message();
         message.setPlayerStatus(PlayerStatus.SET_NAME);
         message.setClientName(username);
         sendmsg(message);
     }
-    public static void entryTable(int tableNumber){
+
+    public static void entryTable(int tableNumber) {
         Message message = new Message();
         message.setPlayerStatus(PlayerStatus.IN_HALL);
         message.setPlayerAction(PlayerAction.JOIN_TABLE);
@@ -171,21 +202,32 @@ public class Game extends Application {
         message.setGameStatus(GameStatus.ALL_READY);
         sendmsg(message);
     }
-//    public static boolean invitePlayer(String playername){
-//        sendmsg(playername);
-//        return checkValid(playername);
-//    }
-//    private static boolean checkValid(String username) {
-//        Message message = new Message();
-//        message = m1.getMessage();
-//        System.out.print(message);
-//        while ((message.getPlayerStatus() != PlayerStatus.SET_NAME) && (!message.getClientName().equals(username))) {
-//            message = m1.getMessage();
-//        }
-//        if (message.getFeedBackMessage().equals("ValidName")) {
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
+    public static String horizontal(int location,String[] board){
+        String word = board[location];
+        int index = location;
+        while (((index-1) % 20 != 0)&&(!board[index-1].equals(""))){
+            index = index -1;
+            word = board[index] +word;
+        }
+        index = location;
+        while (((index+1 % 20) != 0) && (!board[index+1].equals(""))){
+            index = index+1;
+            word = word+board[index];
+        }
+        return word;
+    }
+    public static String vertical(int location,String[] board){
+        String word = board[location];
+        int index = location;
+        while (!(index < 20) && (!board[index-20].equals(""))){
+            index = index - 20;
+            word = board[index] + word;
+        }
+        index = location;
+        while (!(index >379) && (!board[index+20].equals(""))){
+            index = index + 20;
+            word = board[index] +word;
+        }
+        return word;
+    }
 }
