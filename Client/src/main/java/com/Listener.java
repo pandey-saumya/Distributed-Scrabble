@@ -45,6 +45,7 @@ public class Listener extends Thread {
                         }
                         break;
                     case IN_HALL:
+                        HallController.getInstance().getCurrentPlayer(name);
                         if (msg.getPlayerAction() == PlayerAction.JOIN_TABLE){
                             if ((msg.getFeedBackMessage()!=null) && (msg.getFeedBackMessage().equals("ValidTable"))) {
                                 Platform.runLater(()-> {
