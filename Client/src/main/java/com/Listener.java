@@ -117,6 +117,7 @@ public class Listener extends Thread {
                         }
                         break;
                     case IN_GAME:
+                        TableController.getInstance().setCurrentPlayer(name);
                         if (msg.getPlayerAction() == PlayerAction.GAME_CONTENT) {
                             // Player name & turn
                             Set<String> keys_player = msg.getPlayerList().keySet();
@@ -148,10 +149,16 @@ public class Listener extends Thread {
                             }
                             TableController.getInstance().setBoard(msg.getBoard());
                         }
+                        if(msg.getPlayerAction()== PlayerAction.WANTS_VOTING){
+                            String name = msg.getClientName();
+                            String word = msg.getGameWord();
+                            TableController.getInstance().startVoting(name,word);
+                        }
                         if(msg.getPlayerAction()== PlayerAction.VOTING){
                             String name = msg.getClientName();
                             String word = msg.getGameWord();
-                            TableController.getInstance().voting(name,word);
+                            String toVoteFor = msg.getClientToVoteFor();
+                            TableController.getInstance().voting(name,word,toVoteFor);
                         }
                         if (msg.getGameStatus()==GameStatus.ENDING){
                             String winner = msg.getGameResult();
