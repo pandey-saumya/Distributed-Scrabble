@@ -62,6 +62,7 @@ public class TableController implements Initializable{
     private static Stage timerStage;
     public static ReadyController readyController;
     public static TimerController timerController;
+    public static String currentPlayer;
 
 
     @FXML private List<SCell> cells;
@@ -85,6 +86,10 @@ public class TableController implements Initializable{
 
     public Stage getTimerStage() {
         return timerStage;
+    }
+
+    public void setCurrentPlayer(String name){
+        currentPlayer = name;
     }
 
     @Override
@@ -350,11 +355,11 @@ public class TableController implements Initializable{
                     Optional<ButtonType> result = alert.showAndWait();
                     if (result.get() == buttonTypeOne) {
                         word = getHorizontalWord();
-                        Game.sendCharacter(getBoardInputPosition(), boardData[inputPos[0]-1][inputPos[1]-1].toUpperCase(), word);
+                        Game.sendCharacter(getBoardInputPosition(), boardData[inputPos[0]-1][inputPos[1]-1].toUpperCase(), word, currentPlayer);
 
                     } else if (result.get() == buttonTypeTwo) {
                         word = getVerticalWord();
-                        Game.sendCharacter(getBoardInputPosition(),boardData[inputPos[0]-1][inputPos[1]-1].toUpperCase(),word);
+                        Game.sendCharacter(getBoardInputPosition(), boardData[inputPos[0]-1][inputPos[1]-1].toUpperCase(), word, currentPlayer);
                     }
                 }
             });
@@ -383,11 +388,11 @@ public class TableController implements Initializable{
         }
     }
 
-    public void voting(String name,String word){
+    public void startVoting(String name,String word){
         Platform.runLater(()->{
             Alert alert1 = new Alert(Alert.AlertType.CONFIRMATION);
-            alert1.setTitle("Voting Confirmation");
-            alert1.setHeaderText("Do you want to vote for this word ?");
+            alert1.setTitle("Put to Vote");
+            alert1.setHeaderText("Do you want to put this word for vote?");
             alert1.setContentText("Do you think this is a word ?");
             ButtonType buttonyes = new ButtonType("Yes");
             ButtonType buttonno = new ButtonType("No");
@@ -395,10 +400,30 @@ public class TableController implements Initializable{
             Optional<ButtonType> result1 = alert1.showAndWait();
             //add condition to not allow self voting by the player
             if(result1.get()==buttonyes) {
-                Game.voting(true,name,word);
+                Game.startVoting(true, currentPlayer, word);
             }
             else if(result1.get()==buttonno) {
-                Game.voting(false,name,word);
+                Game.startVoting(false,currentPlayer , word);
+            }
+        });
+    }
+
+    public void voting(String name,String word, String voteFor){
+        Platform.runLater(()->{
+            Alert alert1 = new Alert(Alert.AlertType.CONFIRMATION);
+            alert1.setTitle("Vote");
+            alert1.setHeaderText("Do you want to vote for this word?");
+            alert1.setContentText("Do you think this is a word ?");
+            ButtonType buttonyes = new ButtonType("Yes");
+            ButtonType buttonno = new ButtonType("No");
+            alert1.getButtonTypes().setAll(buttonyes,buttonno);
+            Optional<ButtonType> result1 = alert1.showAndWait();
+            //add condition to not allow self voting by the player
+            if(result1.get()==buttonyes) {
+                Game.voting(1,name,word,voteFor);
+            }
+            else if(result1.get()==buttonno) {
+                Game.voting(0,name,word, voteFor);
             }
         });
     }

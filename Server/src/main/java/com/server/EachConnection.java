@@ -333,6 +333,9 @@ public class EachConnection implements Runnable {
                 game.setVotingYes(0);
                 gameContent(m);
                 break;
+            case WANTS_VOTING:
+                startVoting(m);
+                break;
             case VOTING:
                 voting(m);
                 break;
@@ -344,6 +347,7 @@ public class EachConnection implements Runnable {
 
     private void gameContent(Message m){
         GameRoom game = getCurrentGame();
+        String name = m.getClientName();
         EachConnection[] players = game.getPlayerList();
         Message toPlayers = new Message();
         //players bc
@@ -353,21 +357,59 @@ public class EachConnection implements Runnable {
         toPlayers.setGameWord(m.getGameWord());
         toPlayers.setClientName(this.clientName);
         toPlayers.setPlayerStatus(PlayerStatus.IN_GAME);
-        toPlayers.setPlayerAction(PlayerAction.VOTING);
-        roombroadCast(players,toPlayers);
+        toPlayers.setPlayerAction(PlayerAction.WANTS_VOTING);
+        setClientAction(PlayerAction.WANTS_VOTING);
+        List<EachConnection> clients = ServerState.getClientInstance().getConnectedClients();
+        for (EachConnection client : clients) {
+            if (client.getClientName().equals(name)) {
+                client.write(toPlayers);
+            }
+        }
     }
 
-    private void voting(Message m){
+    private void startVoting(Message m){
+        System.out.println("START voting is being called");
         GameRoom game = getCurrentGame();
         String name = m.getClientName();
+        Message toPlayers = new Message();
+        toPlayers.setPlayerStatus(PlayerStatus.IN_GAME);
+        toPlayers.setPlayerAction(PlayerAction.VOTING);
+        toPlayers.setClientToVoteFor(name);
+        toPlayers.setGameWord(m.getGameWord());
+        boolean putToVote = m.getstartVoting();
+        EachConnection[] players = game.getPlayerList();
+//        EachConnection[] listToBroadcastVoting = new EachConnection[game.getNumOfPlayer()];
+        if(putToVote){
+            for(int i = 0; i<game.getNumOfPlayer(); i++){
+                System.out.println(players[i].getClientName()+"this");
+                System.out.println(players[i].getClientAction()+"this action");
+                if (players[i].getClientAction()!= PlayerAction.WANTS_VOTING){
+//                    listToBroadcastVoting[i] = players[i];
+                    System.out.println(players[i].getClientName()+"this is going in the list");
+                    players[i].write(toPlayers);
+                }
+            }
+        }
+//        roombroadCast(listToBroadcastVoting,toPlayers);
+    }
+    private void voting(Message m){
+        System.out.println("voting is being called");
+        GameRoom game = getCurrentGame();
+        String name = m.getClientName();
+        String voteFor = m.getClientToVoteFor();
         EachConnection[] players = game.getPlayerList();
         Message toPlayers = new Message();
         toPlayers.setClientName(name);
+        System.out.println(this.clientName+"who is voting");
+        System.out.println(voteFor+"who asked for voting");
+        System.out.println(m.getVotingNum()+"this is the vote result");
+        System.out.println(m.getGameWord().length()+"score for the word");
+
         // voting +1
-        game.voting(m.getVotingResult());
+        game.voting(m.getVotingNum());
         switch (game.votingResult()){
             case "Accept":
-                game.setPlayerScore(name,game.getScore(name)+m.getGameWord().length());
+                game.setPlayerScore(voteFor,game.getScore(voteFor)+m.getGameWord().length());
                 game.SpaceRemain();
                 toPlayers.setVotingResult(true);
                 game.turnPass(name);
@@ -404,7 +446,9 @@ public class EachConnection implements Runnable {
             case "inProgress":
                 break;
         }
+
     }
+
 
     //TODO pass logic is wrong
     private void pass(){
