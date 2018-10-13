@@ -390,6 +390,7 @@ public class EachConnection implements Runnable {
                 }
             }
         }
+        setClientAction(PlayerAction.VOTING_DONE);
 //        roombroadCast(listToBroadcastVoting,toPlayers);
     }
     private void voting(Message m){
@@ -412,8 +413,9 @@ public class EachConnection implements Runnable {
                 game.setPlayerScore(voteFor,game.getScore(voteFor)+m.getGameWord().length());
                 game.SpaceRemain();
                 toPlayers.setVotingResult(true);
-                game.turnPass(name);
-
+                game.turnPass(voteFor);
+                toPlayers.setPlayerStatus(PlayerStatus.IN_GAME);
+                setClientAction(PlayerAction.VOTING_DONE);
                 if (!game.gameEnd()){
                     toPlayers.setPlayerStatus(PlayerStatus.IN_GAME);
                     toPlayers.setPlayerAction(PlayerAction.VOTING);
@@ -428,8 +430,10 @@ public class EachConnection implements Runnable {
                 break;
             case "Reject":
                 toPlayers.setVotingResult(false);
-                game.turnPass(name);
+                game.turnPass(voteFor);
                 game.SpaceRemain();
+                toPlayers.setPlayerStatus(PlayerStatus.IN_GAME);
+                setClientAction(PlayerAction.VOTING_DONE);
 
                 if (!game.gameEnd()){
                     toPlayers.setPlayerStatus(PlayerStatus.IN_GAME);
@@ -446,6 +450,8 @@ public class EachConnection implements Runnable {
             case "inProgress":
                 break;
         }
+//        EachConnection[] players = game.getPlayerList();
+//        roombroadCast(players,toPlayers);
 
     }
 
