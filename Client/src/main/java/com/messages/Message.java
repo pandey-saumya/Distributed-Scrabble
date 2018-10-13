@@ -22,8 +22,6 @@ public class Message implements Serializable{
     private int clientNum;
     private int tableId;
     private int votingNum;
-    private boolean startVoting;
-    private String clientToVoteFor;
     private static final long serialVersionUID = 1L;
     private String gameResult;
 
@@ -115,14 +113,6 @@ public class Message implements Serializable{
         this.clientName = clientName;
     }
 
-    public String getClientToVoteFor() {
-        return clientToVoteFor;
-    }
-
-    public void setClientToVoteFor(String clientToVoteFor) {
-        this.clientToVoteFor = clientToVoteFor;
-    }
-
     public int getTableId() {
         return tableId;
     }
@@ -161,14 +151,6 @@ public class Message implements Serializable{
 
     public void setVotingNum(int votingNum) {
         this.votingNum = votingNum;
-    }
-
-    public boolean getstartVoting() {
-        return startVoting;
-    }
-
-    public void setStartVoting(boolean startVoting) {
-        this.startVoting = startVoting;
     }
 
     public Map<String, String> getConnectedClients() {

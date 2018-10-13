@@ -178,9 +178,8 @@ public class GameRoom{
                 if number of votes = number players we accept the word and update the score else reject it
      */
     public synchronized String votingResult() {
-        System.out.println(votingNum+"this is the voting num");
-        if (votingNum == numOfPlayer-1) {
-            if (votingYes == numOfPlayer-1) {
+        if (votingNum == numOfPlayer) {
+            if (votingYes == numOfPlayer) {
                 return "Accept";
             } else {
                 return "Reject";
@@ -282,9 +281,9 @@ public class GameRoom{
         return votingNum;
     }
 
-    public synchronized void voting(int voting) {
+    public synchronized void voting(boolean voting) {
         this.votingNum += 1;
-        if (voting == 1){
+        if (voting){
             this.votingYes+= 1;
         }
     }

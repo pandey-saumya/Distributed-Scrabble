@@ -140,36 +140,23 @@ public class Game extends Application {
         sendmsg(message);
     }
 
-    public static void sendCharacter(int[] position, String character, String word, String name) {
+    public static void sendCharacter(int[] position, String character, String word) {
         Message message = new Message();
         message.setPlayerStatus(PlayerStatus.IN_GAME);
         message.setPlayerAction(PlayerAction.SET_CHARACTER);
         message.setGameLocation(position);
         message.setGameCharacter(character);
         message.setGameWord(word);
-        message.setClientName(name);
         sendmsg(message);
     }
 
-    public static void startVoting(boolean startVoting,String name,String word) {
-        Message message = new Message();
-        message.setPlayerStatus(PlayerStatus.IN_GAME);
-        message.setPlayerAction(PlayerAction.WANTS_VOTING);
-        message.setClientName(name);
-        message.setClientToVoteFor(name);
-        message.setGameWord(word);
-        message.setStartVoting(startVoting);
-        sendmsg(message);
-    }
-
-    public static void voting(int votingNum,String name,String word, String clientToVoteFor) {
+    public static void voting(boolean votingResult,String name,String word) {
         Message message = new Message();
         message.setPlayerStatus(PlayerStatus.IN_GAME);
         message.setPlayerAction(PlayerAction.VOTING);
         message.setClientName(name);
-        message.setClientToVoteFor(clientToVoteFor);
         message.setGameWord(word);
-        message.setVotingNum(votingNum);
+        message.setVotingResult(votingResult);
         sendmsg(message);
     }
 
