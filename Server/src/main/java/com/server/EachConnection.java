@@ -390,6 +390,13 @@ public class EachConnection implements Runnable {
                 }
             }
         }
+        else{
+            game.SpaceRemain();
+            game.turnPass(name);
+            game_information();
+            setClientAction(PlayerAction.VOTING_DONE);
+            setClientStatus(PlayerStatus.IN_GAME);
+        }
         setClientAction(PlayerAction.VOTING_DONE);
         setClientStatus(PlayerStatus.IN_GAME);
 //        roombroadCast(listToBroadcastVoting,toPlayers);
