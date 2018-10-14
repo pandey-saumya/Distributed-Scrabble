@@ -149,7 +149,6 @@ public class TableController implements Initializable{
     }
 //do not open text fields for UI
     public void setEditable(){
-
         for(int i=0;i<20;i++){
             for(int j=0;j<20;j++){
                 if(!boardData[i][j].isEmpty()) {
@@ -467,9 +466,13 @@ public class TableController implements Initializable{
     // read letter input from cell
     @FXML private void keyListener(KeyEvent e) {
         String input = e.getText();
+        System.out.println();
         SCell cell = ((SCell) e.getSource());
+        if (Game.turn){
+            isInputOnce = false;
+        }
         // set cell text from input, reset cell if input is 0
-        if (!cell.status.equals(CStatus.LOCK)) {
+        if (!cell.status.equals(CStatus.LOCK)) { ;
             if (!cell.getText().isEmpty()){
                 if (input.equals("0")){
                     cell.setText("");

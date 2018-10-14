@@ -391,6 +391,7 @@ public class EachConnection implements Runnable {
             }
         }
         setClientAction(PlayerAction.VOTING_DONE);
+        setClientStatus(PlayerStatus.IN_GAME);
 //        roombroadCast(listToBroadcastVoting,toPlayers);
     }
     private void voting(Message m){
@@ -416,6 +417,7 @@ public class EachConnection implements Runnable {
                 game.turnPass(voteFor);
                 toPlayers.setPlayerStatus(PlayerStatus.IN_GAME);
                 setClientAction(PlayerAction.VOTING_DONE);
+                setClientStatus(PlayerStatus.IN_GAME);
                 if (!game.gameEnd()){
                     toPlayers.setPlayerStatus(PlayerStatus.IN_GAME);
                     toPlayers.setPlayerAction(PlayerAction.VOTING);
@@ -434,6 +436,7 @@ public class EachConnection implements Runnable {
                 game.SpaceRemain();
                 toPlayers.setPlayerStatus(PlayerStatus.IN_GAME);
                 setClientAction(PlayerAction.VOTING_DONE);
+                setClientStatus(PlayerStatus.IN_GAME);
 
                 if (!game.gameEnd()){
                     toPlayers.setPlayerStatus(PlayerStatus.IN_GAME);

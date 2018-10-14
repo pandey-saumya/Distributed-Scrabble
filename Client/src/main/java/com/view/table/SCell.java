@@ -23,6 +23,7 @@ public class SCell extends Button {
     }
 
     public void setLockStatus(){
+        System.out.print("when is the lock getting set");
         status=CStatus.LOCK;
         isHighLight=false;
     }

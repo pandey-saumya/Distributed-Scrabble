@@ -145,6 +145,7 @@ public class Game extends Application {
         message.setPlayerStatus(PlayerStatus.IN_GAME);
         message.setPlayerAction(PlayerAction.SET_CHARACTER);
         message.setGameLocation(position);
+        System.out.print("character"+character);
         message.setGameCharacter(character);
         message.setGameWord(word);
         message.setClientName(name);
