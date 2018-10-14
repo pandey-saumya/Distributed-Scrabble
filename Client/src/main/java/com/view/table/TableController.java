@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import javafx.geometry.Insets;
 
 
 public class TableController implements Initializable{
@@ -452,6 +453,7 @@ public class TableController implements Initializable{
     @FXML private TextField T397;
     @FXML private TextField T398;
     @FXML private TextField T399;
+    @FXML private Label label;
     //</editor-fold>
     private static TableController instance;
     private static Stage readyStage;
@@ -1934,7 +1936,7 @@ public class TableController implements Initializable{
                 alert.setContentText("Choose your option.");
                 ButtonType buttonTypeH = new ButtonType("Horizontal");
                 ButtonType buttonTypeV = new ButtonType("Vertical");
-                ButtonType buttonTypeCancel = new ButtonType("Let me think", ButtonBar.ButtonData.CANCEL_CLOSE);
+                ButtonType buttonTypeCancel = new ButtonType("Unselect", ButtonBar.ButtonData.CANCEL_CLOSE);
                 alert.getButtonTypes().setAll(buttonTypeH, buttonTypeV, buttonTypeCancel);
                 Optional<ButtonType> result = alert.showAndWait();
                 String word =null;
@@ -2001,8 +2003,8 @@ public class TableController implements Initializable{
     public void voting(String name,String word){
         Platform.runLater(()->{
             Alert alert1 = new Alert(Alert.AlertType.CONFIRMATION);
-            alert1.setTitle("Voting Confirmation");
-            alert1.setHeaderText("Do you want to vote for this word ?");
+            alert1.setTitle("Voting");
+            alert1.setHeaderText("Do you really think < "+word+" > is a word ?");
             alert1.setContentText("Do you think this is a word ?");
             ButtonType buttonyes = new ButtonType("Yes");
             ButtonType buttonno = new ButtonType("No");

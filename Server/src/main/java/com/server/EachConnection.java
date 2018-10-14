@@ -29,7 +29,7 @@ public class EachConnection implements Runnable {
     private String clientName;
     private int tableId;
     static Logger logger = LoggerFactory.getLogger(EachConnection.class);
-    private Map<String, String> listToSend = new HashMap<String, String>();
+    //private Map<String, String> listToSend = new HashMap<String, String>();
 
 
 
@@ -80,7 +80,10 @@ public class EachConnection implements Runnable {
                 if (game.getNumOfPlayer() == 2){
                     game.deletePlayer(clientNum,clientName);
                     hall_information();
-                    gameResult(game.gameResult());
+                    //gameResult(game.gameResult());
+                    if (game.isGameStart()){
+                        gameResult(game.gameResult());
+                    }
                 }else {
                     if (game.getNumOfPlayer() <= 1) {
                         game.deletePlayer(clientNum, clientName);
@@ -262,25 +265,93 @@ public class EachConnection implements Runnable {
         if (m.getPlayerAction() == PlayerAction.INVITE_PLAYER){
             String name = m.getClientName();
             Message toClient = new Message();
-            toClient.setPlayerStatus(PlayerStatus.IN_HALL);
-            toClient.setPlayerAction(PlayerAction.INVITE_PLAYER);
-            toClient.setTableId(this.tableId);
+
             List<EachConnection> clients = ServerState.getClientInstance().getConnectedClients();
             for (EachConnection client : clients) {
                 if (client.getClientName().equals(name)) {
+                    if (client.getClientStatus().equals(PlayerStatus.IN_HALL)){
+                        toClient.setPlayerStatus(PlayerStatus.IN_HALL);
+                        toClient.setPlayerAction(PlayerAction.INVITE_PLAYER);
+                        toClient.setClientName(this.clientName);
+                        toClient.setTableId(this.tableId);
+                        client.write(toClient);
+                        Message toSender = new Message();
+                        toSender.setPlayerStatus(PlayerStatus.IN_ROOM);
+                        toSender.setPlayerAction(PlayerAction.INVITE_FEEDBACK);
+                        toSender.setFeedBackMessage("The invitation to <"+name + "> has been send success");
+                        List<EachConnection> inHall = new ArrayList<>();
+                        for (EachConnection inhall : clients){
+                            if (inhall.getClientStatus() == PlayerStatus.IN_HALL){
+                                inHall.add(inhall);
+                            }
+                        }
+                        Map<String,String> inviteList = new HashMap<>();
+                        for(EachConnection player : inHall){
+                            inviteList.put(player.getClientName(),player.getClientName());
+                        }
+                        toSender.setPlayerList(inviteList);
+                        oos.writeObject(toSender);
+                    }else{
+                        toClient.setPlayerStatus(PlayerStatus.IN_ROOM);
+                        toClient.setPlayerAction(PlayerAction.INVITE_FEEDBACK);
+                        List<EachConnection> inHall = new ArrayList<>();
+                        for (EachConnection inhall : clients){
+                            if (inhall.getClientStatus() == PlayerStatus.IN_HALL){
+                                inHall.add(inhall);
+                            }
+                        }
+                        Map<String,String> inviteList = new HashMap<>();
+                        for(EachConnection player : inHall){
+                            inviteList.put(player.getClientName(),player.getClientName());
+                        }
+                        toClient.setPlayerList(inviteList);
+                        toClient.setFeedBackMessage("<"+name + "> cannot be invited now.");
+                        oos.writeObject(toClient);
+                    }
+                }
+            }
+        }
+        if (m.getPlayerAction() == PlayerAction.INVITE_FEEDBACK){
+            String name = m.getClientName();
+            Message toClient = new Message();
+            List<EachConnection> clients = ServerState.getClientInstance().getConnectedClients();
+            toClient.setPlayerStatus(PlayerStatus.IN_ROOM);
+            toClient.setPlayerAction(PlayerAction.INVITE_FEEDBACK);
+            toClient.setFeedBackMessage("<"+this.clientName + "> rejected your invitation.");
+
+
+
+            for (EachConnection client : clients) {
+                if (client.getClientName().equals(name)) {
+                    List<EachConnection> inHall = new ArrayList<>();
+                    for (EachConnection inhall : clients){
+                        if (inhall.getClientStatus() == PlayerStatus.IN_HALL){
+                            inHall.add(inhall);
+                        }
+                    }
+                    Map<String,String> inviteList = new HashMap<>();
+                    for(EachConnection player : inHall){
+                        inviteList.put(player.getClientName(),player.getClientName());
+                    }
+                    toClient.setPlayerList(inviteList);
                     client.write(toClient);
                 }
             }
         }
+
+
         if (m.getPlayerAction() == PlayerAction.RETURN_HALL){
             setClientStatus(PlayerStatus.IN_HALL);
             setClientAction(PlayerAction.HALL_WAITING);
             ServerState.clientList.replace(clientName,"Online");
             GameRoom game = getCurrentGame();
+
             if (game.getNumOfPlayer() == 2 && !game.isEnding()){
                 game.deletePlayer(clientNum, clientName);
                 hall_information();
-                gameResult(game.gameResult());
+                if (game.isGameStart()){
+                    gameResult(game.gameResult());
+                }
             }else {
                 if (game.getNumOfPlayer() <= 1) {
                     game.deletePlayer(clientNum, clientName);
@@ -406,7 +477,7 @@ public class EachConnection implements Runnable {
         }
     }
 
-    //TODO pass logic is wrong
+    //TODO pass logic
     private void pass(){
         GameRoom game = getCurrentGame();
         EachConnection[] players = game.getPlayerList();

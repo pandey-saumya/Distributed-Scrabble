@@ -6,6 +6,7 @@ import com.messages.PlayerAction;
 import com.model.player.Player;
 import com.view.hall.HallController;
 import com.view.login.LoginController;
+import com.view.table.ReadyController;
 import com.view.table.TableController;
 import com.view.username.UsernameController;
 import javafx.application.Platform;
@@ -74,19 +75,8 @@ public class Listener extends Thread {
                             }
                         }
                         if (msg.getPlayerAction() == PlayerAction.INVITE_PLAYER){
-                            Platform.runLater(()->{
-                                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                                alert.setTitle("New Message");
-                                alert.setHeaderText("An invitation has been received.");
-                                alert.setContentText("Do you want to join the game?");
-                                ButtonType YES = new ButtonType("YES");
-                                ButtonType NO = new ButtonType("NO");
-                                alert.getButtonTypes().setAll(YES, NO);
-                                Optional<ButtonType> result = alert.showAndWait();
-                                if (result.get() == YES) {
-                                    Game.entryTable(msg.getTableId());
-                                }
-                            });
+                            //HallController.getInstance().beInvited(msg.getTableId(),msg.getClientName());
+                            Game.updateInvite(msg.getClientName(),msg.getTableId());
                         }
                         break;
                     case IN_ROOM:
@@ -108,6 +98,20 @@ public class Listener extends Thread {
                                 String key_player = iterator_invitePlayer.next();
                                 inviteList.add(key_player);
                             }
+                            ReadyController.getInstance().updateInviteList(inviteList);
+                        }
+                        if (msg.getPlayerAction() == PlayerAction.INVITE_FEEDBACK){
+                            String feedbackMsg = msg.getFeedBackMessage();
+                            ReadyController.getInstance().invitationRejected(feedbackMsg);
+                      //      ReadyController.getInstance().updateInviteList(inviteList);
+                            Set<String> keys_invitePlayer = msg.getPlayerList().keySet();
+                            Iterator<String> iterator_invitePlayer = keys_invitePlayer.iterator();
+                            List<String> inviteList = new ArrayList<>();
+                            while (iterator_invitePlayer.hasNext()) {
+                                String key_player = iterator_invitePlayer.next();
+                                inviteList.add(key_player);
+                            }
+                            ReadyController.getInstance().updateInviteList(inviteList);
                         }
                         if (msg.getGameStatus() == GameStatus.ALL_READY){
                             Game.gameStart();
@@ -150,7 +154,14 @@ public class Listener extends Thread {
                         if(msg.getPlayerAction()== PlayerAction.VOTING){
                             String name = msg.getClientName();
                             String word = msg.getGameWord();
-                            TableController.getInstance().voting(name,word);
+
+                            if (name.equals(this.name)){
+                                Game.voting(true,name,word);
+                            }
+                            else{
+                            TableController.getInstance().voting(name,word);}
+
+
                         }
                         if (msg.getGameStatus()==GameStatus.ENDING){
                             String winner = msg.getGameResult();

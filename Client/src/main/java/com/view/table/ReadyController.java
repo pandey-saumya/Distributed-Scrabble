@@ -14,6 +14,9 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import java.util.List;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -33,6 +36,14 @@ public class ReadyController implements Initializable {
     @FXML private ListView inviteList;
     @FXML private Label playerName;
     @FXML private HBox inviteBox;
+    private static ReadyController instance;
+
+    public ReadyController() {
+        instance = this;
+    }
+    public static ReadyController getInstance() {
+        return instance;
+    }
 
 
     @Override
@@ -58,24 +69,49 @@ public class ReadyController implements Initializable {
         //</editor-fold>
 
         playerName.setText("");
-        data.addAll("A","B","C","D","E");
         inviteList.setItems(data);
         inviteList.setVisible(false);
         inviteBox.setVisible(false);
         playerName.textProperty().bind(inviteList.getSelectionModel().selectedItemProperty());
-//        inviteList.getSelectionModel().selectedItemProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> playerName.setText(newValue));
     }
 
+    public void updateInviteList(List<String> playerInHall) {
+        Platform.runLater(() -> {
+            data.clear();
+            data.addAll(playerInHall);
+            inviteList.setItems(data);
+        });
+    }
     @FXML
     private void ready(){
         TableController.getInstance().getReadyStage().close();
         Game.ready();
     }
+    public void invitationRejected(String feedbackMsg){
+        Platform.runLater(()->{
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Invitation Feedback");
+            alert.setHeaderText("Invitation Feedback");
+            alert.setContentText(feedbackMsg);
+            alert.showAndWait();
+//            Game.invite();
+        });
+    }
 
     @FXML private void confirm(){
-        // TODO - invitePlayer()
         String invitePlayer = playerName.getText();
-        Game.invitePlayer(invitePlayer);
+        if (invitePlayer == null){
+            Platform.runLater(()->{
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("Error");
+                alert.setContentText("Please choose one player to invite");
+                alert.showAndWait();
+            });
+        }
+        else{
+            Game.invitePlayer(invitePlayer);
+        }
     }
 
     @FXML

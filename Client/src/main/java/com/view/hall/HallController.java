@@ -7,12 +7,17 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -24,6 +29,9 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+import java.util.HashMap;
+import java.util.Map;
+
 
 import java.io.IOException;
 import java.net.URL;
@@ -61,6 +69,8 @@ public class HallController implements Initializable {
     @FXML public Label tableNum10;
     @FXML public Label tableNum11;
     @FXML public Label tableNum12;
+    @FXML public VBox inviteList;
+
     //</editor-fold>
 
     public void refreshTableNum(int tableName, int playerInTable){
@@ -161,6 +171,65 @@ public class HallController implements Initializable {
     public void closeSystem(){
         Platform.exit();
         System.exit(0);
+    }
+
+    public void beInvited( Map<String,Integer> List ){
+        Platform.runLater(()->{
+            inviteList.getChildren().clear();
+            for (String key: List.keySet()){
+                String inviter = key;
+                int tableId = List.get(key);
+                Button acceptBtn = new Button("Accept");
+                acceptBtn.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                acceptBtn.graphicTextGapProperty().setValue(0);
+                acceptBtn.setId("acceptBtn");
+                acceptBtn.setCursor(Cursor.HAND);
+
+                Button rejectBtn = new Button("Reject");
+                rejectBtn.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                rejectBtn.graphicTextGapProperty().setValue(0);
+                rejectBtn.setId("rejectBtn");
+                rejectBtn.setCursor(Cursor.HAND);
+
+                Label inviteName = new Label(inviter);
+                inviteName.getStyleClass().add("inviteLabel");
+                Label table = new Label(Integer.toString(tableId)+"\t");
+                table.getStyleClass().add("inviteLabel");
+                HBox hBox = new HBox();
+                HBox.setMargin(inviteName,new Insets(10));
+                HBox.setMargin(table,new Insets(10,0,10,10));
+
+                hBox.getChildren().addAll(acceptBtn,rejectBtn,table,inviteName);
+                inviteList.getChildren().add(hBox);
+                acceptBtn.addEventHandler(MouseEvent.MOUSE_CLICKED,(MouseEvent e)->{
+                    tableNumber = "Table "+String.valueOf(tableId);
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/table.fxml"));
+                    Parent window = null;
+                    try {
+                        window = (Pane) fxmlLoader.load();
+                        tableController = fxmlLoader.getController();
+                        tableController.title.setText(tableNumber);
+                        for (String rejKey:Game.inviteList.keySet()){
+                            if (Game.inviteList.get(rejKey) != tableId)
+                            {
+                                Game.inviteReject(rejKey);
+                            }
+                        }
+                        Game.entryTable(tableId);
+                        this.scene = new Scene(window);
+                    } catch (IOException ioe) {
+                        ioe.printStackTrace();
+                    }
+                    inviteList.getChildren().clear();
+                });
+                rejectBtn.addEventHandler(MouseEvent.MOUSE_CLICKED,(MouseEvent e)->{
+                    Game.inviteReject(inviter);
+                    Game.inviteList.remove(inviter);
+                    beInvited(Game.inviteList);
+                    inviteList.getChildren().clear();
+                });
+            }
+        });
     }
 
     // Minimize Window

@@ -84,6 +84,33 @@
     -fx-cursor: hand;
 }
 
+#acceptBtn {
+    -fx-graphic: url("../images/acceptBtn.png");
+    -fx-background-color: transparent;
+    -fx-opacity: 1;
+}
+ #acceptBtn:hover {
+    -fx-opacity: 0.5
+}
+ #acceptBtn:pressed {
+    -fx-opacity: 0.2;
+}
+ #rejectBtn {
+    -fx-graphic: url("../images/rejectBtn.png");
+    -fx-background-color: transparent;
+    -fx-opacity: 1;
+}
+ #rejectBtn:hover {
+    -fx-opacity: 0.5
+}
+ #rejectBtn:pressed {
+    -fx-opacity: 0.2;
+}
+ .inviteLabel {
+    -fx-font-size: 18px;
+    -fx-text-fill: #f89406;
+}
+
 .emptyTable{
     -fx-graphic: url("../images/table_empty.png");
     -fx-background-color:transparent;
