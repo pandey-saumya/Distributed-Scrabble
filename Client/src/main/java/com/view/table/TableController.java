@@ -149,11 +149,10 @@ public class TableController implements Initializable{
     }
 //do not open text fields for UI
     public void setEditable(){
-
         for(int i=0;i<20;i++){
             for(int j=0;j<20;j++){
                 if(!boardData[i][j].isEmpty()) {
-                    ((SCell) playerBoard.getChildren().get(40 + i * 20 + j)).setLockStatus();
+                    cells.get(i*20+j).setLockStatus();
                 }
             }
         }
@@ -164,7 +163,7 @@ public class TableController implements Initializable{
         Platform.runLater(()-> {
             for (int i = 0; i < 20; i++) {
                 for (int j = 0; j < 20; j++) {
-                    ((SCell) playerBoard.getChildren().get(40 + i * 20 + j)).setText(board[i][j]);
+                    cells.get(i*20+j).setText(boardData[i][j]);
                 }
             }
             this.setEditable();
@@ -328,9 +327,6 @@ public class TableController implements Initializable{
     }
 
     @FXML
-    /*Liping score here
-   Getting vertical score selection bug
-     */
     private void confirm() {
         if (Game.turn) {
             Platform.runLater(() -> {
@@ -354,10 +350,12 @@ public class TableController implements Initializable{
 
                     Optional<ButtonType> result = alert.showAndWait();
                     if (result.get() == buttonTypeOne) {
+                        isInputOnce=false;
                         word = getHorizontalWord();
                         Game.sendCharacter(getBoardInputPosition(), boardData[inputPos[0]-1][inputPos[1]-1].toUpperCase(), word, currentPlayer);
 
                     } else if (result.get() == buttonTypeTwo) {
+                        isInputOnce=false;
                         word = getVerticalWord();
                         Game.sendCharacter(getBoardInputPosition(), boardData[inputPos[0]-1][inputPos[1]-1].toUpperCase(), word, currentPlayer);
                     }
@@ -468,6 +466,7 @@ public class TableController implements Initializable{
     @FXML private void keyListener(KeyEvent e) {
         String input = e.getText();
         SCell cell = ((SCell) e.getSource());
+
         // set cell text from input, reset cell if input is 0
         if (!cell.status.equals(CStatus.LOCK)) {
             if (!cell.getText().isEmpty()){
@@ -484,7 +483,7 @@ public class TableController implements Initializable{
                 }
                 return;
             }
-            if (!isInputOnce && !input.isEmpty() && Pattern.matches("[a-z]",input)) {
+            if (!isInputOnce && !input.isEmpty() && Pattern.matches("[a-zA-Z]",input)) {
                 cell.setInitStatus();
                 cell.setText(input);
                 isInputOnce=true;

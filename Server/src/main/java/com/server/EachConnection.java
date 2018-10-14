@@ -390,6 +390,15 @@ public class EachConnection implements Runnable {
                 }
             }
         }
+        else{
+            game.SpaceRemain();
+            game.turnPass(name);
+            game_information();
+            setClientAction(PlayerAction.VOTING_DONE);
+            setClientStatus(PlayerStatus.IN_GAME);
+        }
+        setClientAction(PlayerAction.VOTING_DONE);
+        setClientStatus(PlayerStatus.IN_GAME);
 //        roombroadCast(listToBroadcastVoting,toPlayers);
     }
     private void voting(Message m){
@@ -412,7 +421,10 @@ public class EachConnection implements Runnable {
                 game.setPlayerScore(voteFor,game.getScore(voteFor)+m.getGameWord().length());
                 game.SpaceRemain();
                 toPlayers.setVotingResult(true);
-                game.turnPass(name);
+                game.turnPass(voteFor);
+                toPlayers.setPlayerStatus(PlayerStatus.IN_GAME);
+                setClientAction(PlayerAction.VOTING_DONE);
+                setClientStatus(PlayerStatus.IN_GAME);
 
                 if (!game.gameEnd()){
                     toPlayers.setPlayerStatus(PlayerStatus.IN_GAME);
@@ -428,8 +440,11 @@ public class EachConnection implements Runnable {
                 break;
             case "Reject":
                 toPlayers.setVotingResult(false);
-                game.turnPass(name);
+                game.turnPass(voteFor);
                 game.SpaceRemain();
+                toPlayers.setPlayerStatus(PlayerStatus.IN_GAME);
+                setClientAction(PlayerAction.VOTING_DONE);
+                setClientStatus(PlayerStatus.IN_GAME);
 
                 if (!game.gameEnd()){
                     toPlayers.setPlayerStatus(PlayerStatus.IN_GAME);
