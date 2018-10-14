@@ -22,10 +22,6 @@ public class SCell extends Button {
         isHighLight = false;
     }
 
-    public void setLockStatus(){
-        status=CStatus.LOCK;
-        isHighLight=false;
-    }
 
     public void setHighLightStatus() {
         InnerShadow innerShadow = new InnerShadow();

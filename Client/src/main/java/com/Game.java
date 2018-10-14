@@ -18,6 +18,10 @@ import java.util.Random;
 import java.util.StringTokenizer;
 import com.messages.*;
 import javafx.stage.WindowEvent;
+import com.view.hall.HallController;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Game extends Application {
 
@@ -56,6 +60,7 @@ public class Game extends Application {
     public static Socket socket;
     public static boolean turn = false;
     public static Listener m1;
+    public static Map<String,Integer> inviteList = new HashMap<>();
 
     public void start(Stage primaryStage) throws Exception {
         primaryStageObj = primaryStage;
@@ -89,6 +94,24 @@ public class Game extends Application {
         } catch (IOException e) {
             LoginController.getInstance().loginFailure("Could not connect to server");
         }
+    }
+
+    public static void updateInvite(String name, Integer tableId){
+        if (inviteList.isEmpty()){
+            inviteList.put(name,tableId);
+        }
+        else {
+            {
+                if (inviteList.containsKey(name)) {
+                    if (!inviteList.containsValue(tableId)) {
+                        inviteList.replace(name, tableId);
+                    }
+                } else {
+                    inviteList.put(name, tableId);
+                }
+            }
+        }
+        HallController.getInstance().beInvited(inviteList);
     }
 
 //    public static void sendcharacter(String character, String location, String word){
@@ -215,6 +238,18 @@ public class Game extends Application {
         message.setGameStatus(GameStatus.ALL_READY);
         sendmsg(message);
     }
+
+
+    //TODO
+    public static void inviteReject(String name){
+        Message message = new Message();
+        message.setPlayerStatus(PlayerStatus.IN_ROOM);
+        message.setPlayerAction(PlayerAction.INVITE_FEEDBACK);
+        message.setClientName(name);
+        sendmsg(message);
+    }
+
+   
 //    public static String horizontal(int location,String[] board){
 //        String word = board[location];
 //        int index = location;
@@ -243,4 +278,5 @@ public class Game extends Application {
 //        }
 //        return word;
 //    }
+
 }

@@ -12,8 +12,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="borderPane" prefHeight="800.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.view.hall.HallController">
+<BorderPane fx:id="borderPane" prefHeight="800.0" prefWidth="1100.0" stylesheets="@../css/global.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.view.hall.HallController">
     <right>
         <GridPane prefHeight="800.0" prefWidth="1100.0" BorderPane.alignment="CENTER">
             <columnConstraints>
@@ -39,15 +40,7 @@
                     <GridPane.margin>
                         <Insets left="20.0" top="15.0" />
                     </GridPane.margin></HBox>
-                <TableView fx:id="playerList" prefHeight="200.0" prefWidth="282.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                    <columns>
-                        <TableColumn fx:id="username" prefWidth="155.0" text="Player name" />
-                        <TableColumn fx:id="status" prefWidth="146.0" text="Status" />
-                    </columns>
-                    <GridPane.margin>
-                        <Insets left="5.0" right="20.0" top="20.0" />
-                    </GridPane.margin>
-                </TableView>
+
                 <ScrollPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                     <content>
                         <GridPane prefHeight="812.0" prefWidth="717.0">
@@ -368,8 +361,42 @@
                         </GridPane>
                     </content>
                     <GridPane.margin>
-                        <Insets top="20.0" />
+                        <Insets right="20.0" top="20.0" />
                     </GridPane.margin></ScrollPane>
+                <VBox prefHeight="200.0" prefWidth="282.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                    <children>
+                        <TableView fx:id="playerList" prefHeight="402.0" prefWidth="282.0">
+                            <columns>
+                                <TableColumn fx:id="username" prefWidth="155.0" text="Player name" />
+                                <TableColumn fx:id="status" prefWidth="146.0" text="Status" />
+                            </columns>
+                        </TableView>
+                        <HBox prefHeight="60.0" prefWidth="302.0">
+                            <children>
+                                <Label prefHeight="49.0" prefWidth="107.0" text="Invitation">
+                                    <font>
+                                        <Font size="18.0" />
+                                    </font></Label>
+                                <Label layoutX="10.0" layoutY="10.0" prefHeight="49.0" prefWidth="72.0" text="Table">
+                                    <font>
+                                        <Font size="18.0" />
+                                    </font></Label>
+                                <Label layoutX="136.0" layoutY="10.0" prefHeight="49.0" prefWidth="95.0" text="Player">
+                                    <font>
+                                        <Font size="18.0" />
+                                    </font></Label>
+                            </children>
+                        </HBox>
+                        <ScrollPane prefHeight="200.0" prefWidth="282.0">
+                            <content>
+                                <VBox fx:id="inviteList" maxWidth="300.0" prefHeight="185.0" prefWidth="263.0" />
+                            </content>
+                        </ScrollPane>
+                    </children>
+                    <GridPane.margin>
+                        <Insets right="20.0" top="20.0" />
+                    </GridPane.margin>
+                </VBox>
             </children>
         </GridPane>
     </right>

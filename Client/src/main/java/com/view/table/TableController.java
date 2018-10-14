@@ -24,8 +24,14 @@ import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.net.URL;
+
+import java.util.Optional;
+import java.util.ResourceBundle;
+import javafx.geometry.Insets;
+
 import java.util.*;
 import java.util.regex.Pattern;
+
 
 
 public class TableController implements Initializable{
@@ -55,7 +61,9 @@ public class TableController implements Initializable{
     @FXML private Label player4Ready;
     @FXML private ImageView player4Turn;
 
+
     @FXML private GridPane playerBoard;
+
     //</editor-fold>
     private static TableController instance;
     private static Stage readyStage;
@@ -328,6 +336,53 @@ public class TableController implements Initializable{
 
     @FXML
     private void confirm() {
+
+        /*if (Game.turn){
+            Platform.runLater(()->{
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation");
+                alert.setHeaderText("Please choose a direction for the word to be submitted:");
+                alert.setContentText("Choose your option.");
+                ButtonType buttonTypeH = new ButtonType("Horizontal");
+                ButtonType buttonTypeV = new ButtonType("Vertical");
+                ButtonType buttonTypeCancel = new ButtonType("Unselect", ButtonBar.ButtonData.CANCEL_CLOSE);
+                alert.getButtonTypes().setAll(buttonTypeH, buttonTypeV, buttonTypeCancel);
+                Optional<ButtonType> result = alert.showAndWait();
+                String word =null;
+                String inputRegex = "^[a-zA-Z]{1}$";
+                // user chose "Horizontal"
+                if (result.get() == buttonTypeH){
+                    if (compare() == true){
+                        if (!getBoard()[index].matches(inputRegex)){
+                            Platform.runLater(()->{
+                                Alert alert1 = new Alert(Alert.AlertType.ERROR);
+                                alert1.setHeaderText("Input Error!");
+                                alert1.setContentText("You can only enter one letter in the box.");
+                                alert1.showAndWait();
+                            });
+                        } else {
+                            word = Game.horizontal(index,getBoard());
+                            Game.sendCharacter(index,getBoard()[index].toUpperCase(),word);
+                        }
+                    }
+                    // user chose "Vertical"
+                    //check error here
+                } else if (result.get() == buttonTypeV) {
+                    if (compare() == true){
+                        if (!getBoard()[index].matches(inputRegex)){
+                            Platform.runLater(()->{
+                                Alert alert1 = new Alert(Alert.AlertType.ERROR);
+                                alert1.setHeaderText("Input Error!");
+                                alert1.setContentText("You can only enter one letter in the box.");
+                                alert1.showAndWait();
+                            });
+                        } else {
+                            word = Game.vertical(index,getBoard());
+                            Game.sendCharacter(index,getBoard()[index].toUpperCase(),word);
+                        }
+                        //word = Game.vertical(index,getBoard());
+                        //Game.sendCharacter(index,getBoard()[index].toUpperCase(),word);*/
+
         if (Game.turn) {
             Platform.runLater(() -> {
                 String word = null;
@@ -344,7 +399,7 @@ public class TableController implements Initializable{
 
                     ButtonType buttonTypeOne = new ButtonType("Horizontal");
                     ButtonType buttonTypeTwo = new ButtonType("Vertical");
-                    ButtonType buttonTypeCancel = new ButtonType("Let me think", ButtonBar.ButtonData.CANCEL_CLOSE);
+                    ButtonType buttonTypeCancel = new ButtonType("Unselect", ButtonBar.ButtonData.CANCEL_CLOSE);
 
                     alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeCancel);
 
@@ -358,6 +413,7 @@ public class TableController implements Initializable{
                         isInputOnce=false;
                         word = getVerticalWord();
                         Game.sendCharacter(getBoardInputPosition(), boardData[inputPos[0]-1][inputPos[1]-1].toUpperCase(), word, currentPlayer);
+
                     }
                 }
             });
@@ -389,9 +445,11 @@ public class TableController implements Initializable{
     public void startVoting(String name,String word){
         Platform.runLater(()->{
             Alert alert1 = new Alert(Alert.AlertType.CONFIRMATION);
-            alert1.setTitle("Put to Vote");
-            alert1.setHeaderText("Do you want to put this word for vote?");
-            alert1.setContentText("Do you think this is a word ?");
+
+            alert1.setTitle("Voting");
+            alert1.setHeaderText("Do you really think < "+word+" > is a word ?");
+
+            alert1.setContentText("Do you really think < "+word+" > is a word ?");
             ButtonType buttonyes = new ButtonType("Yes");
             ButtonType buttonno = new ButtonType("No");
             alert1.getButtonTypes().setAll(buttonyes,buttonno);
@@ -410,8 +468,8 @@ public class TableController implements Initializable{
         Platform.runLater(()->{
             Alert alert1 = new Alert(Alert.AlertType.CONFIRMATION);
             alert1.setTitle("Vote");
-            alert1.setHeaderText("Do you want to vote for this word?");
-            alert1.setContentText("Do you think this is a word ?");
+            alert1.setHeaderText("Do you really think < "+word+" > is a word ?");
+            alert1.setContentText("Do you really think < "+word+" > is a word ?");
             ButtonType buttonyes = new ButtonType("Yes");
             ButtonType buttonno = new ButtonType("No");
             alert1.getButtonTypes().setAll(buttonyes,buttonno);
