@@ -593,7 +593,7 @@ public class TableController implements Initializable{
                     if (boardData[x][y + m].isEmpty()) {
                         break;
                     }
-                    cells.get(20 * x + y - m).setHighLightStatus();
+                    cells.get(20 * x + y + m).setHighLightStatus();
                     m++;
                 }
             }else{
