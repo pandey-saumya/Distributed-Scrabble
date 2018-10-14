@@ -22,6 +22,7 @@ public class SCell extends Button {
         isHighLight = false;
     }
 
+
     public void setHighLightStatus() {
         InnerShadow innerShadow = new InnerShadow();
         innerShadow.setRadius(50);

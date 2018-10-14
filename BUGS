@@ -1,0 +1,13 @@
+1. Player should not be allowed to enter a word in the grid till the second player clicks ready
+2. Throw exception on inviting unavailable client 
+3.Change error message pop up when other player has not joined and you are trying to play alone
+4.You cannot vote for your own word
+5. Add the name of the person the scrabble board belongs to like Table1 Liping, Table2 Arushi
+6.Person can't add on letter multiple times in the same word before clicking confirm
+7.Change the pop up of choose horizontal and instead add the buttons in the GUI
+8.Server hosts each game room on different port
+9.Dyanmically fetch player list for invite.
+10. Put the invite option in the game hall
+11.Change the text in scrabble board to black
+12. check pass,vote and score logic thouroughly
+
