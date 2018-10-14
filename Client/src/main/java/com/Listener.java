@@ -152,18 +152,20 @@ public class Listener extends Thread {
                                 TableController.getInstance().refreshPlayerScore(key_score,score);
                             }
                             TableController.getInstance().setBoard(msg.getBoard());
+                            TableController.getInstance().deHilightAll();
                         }
-                        if(msg.getPlayerAction()== PlayerAction.WANTS_VOTING){
-                            String name = msg.getClientName();
-                            String word = msg.getGameWord();
-                            TableController.getInstance().startVoting(name,word);
-                        }
+//                        if(msg.getPlayerAction()== PlayerAction.WANTS_VOTING){
+//                            String name = msg.getClientName();
+//                            String word = msg.getGameWord();
+//                            TableController.getInstance().startVoting(name,word);
+//                        }
                         if(msg.getPlayerAction()== PlayerAction.VOTING){
                             String name = msg.getClientName();
                             String word = msg.getGameWord();
 
                             String toVoteFor = msg.getClientToVoteFor();
                             TableController.getInstance().voting(name,word,toVoteFor);
+                            TableController.getInstance().highLight(msg.getGameLocation(),msg.getWordOrientation());
 
                         }
                         if (msg.getGameStatus()==GameStatus.ENDING){

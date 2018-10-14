@@ -15,6 +15,7 @@ public class Message implements Serializable{
     private PlayerStatus playerStatus;
     private String gameCharacter;
     private int[] gameLocation;
+    private int wordOrientation;
     private String gameWord;
     private String clientName;
     private String feedBackMessage;
@@ -22,7 +23,7 @@ public class Message implements Serializable{
     private int clientNum;
     private int tableId;
     private int votingNum;
-    private boolean startVoting;
+    private boolean startVoting=true;
     private String clientToVoteFor;
     private static final long serialVersionUID = 1L;
     private String gameResult;
@@ -98,6 +99,10 @@ public class Message implements Serializable{
     public void setGameLocation(int[] gameLocation) {
         this.gameLocation = gameLocation;
     }
+
+    public void setWordOrientation(int wordOrientation){ this.wordOrientation=wordOrientation; }
+
+    public int getWordOrientation(){ return wordOrientation; }
 
     public String getGameWord() {
         return gameWord;

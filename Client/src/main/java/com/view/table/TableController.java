@@ -77,7 +77,8 @@ public class TableController implements Initializable{
 
     private List<SCell> selectWords=new ArrayList<>();
     private boolean isInputOnce=false;
-    private int[] inputPos=new int[2];
+    private int[] inputPos=new int[2]; // storing letter input position
+    private int orientation=-1; // 0 for horizontal,1 for vertical, -1 is initial value
     private String[][] boardData=new String[20][20];
 
     public TableController(){
@@ -175,6 +176,18 @@ public class TableController implements Initializable{
                 }
             }
             this.setEditable();
+        });
+    }
+
+    public void deHilightAll(){
+        Platform.runLater(()->{
+            for(int i=0;i<20;i++){
+                for(int j=0;j<20;j++){
+                    if(!boardData[i][j].isEmpty()) {
+                        cells.get(i*20+j).setDeHilightStatus();
+                    }
+                }
+            }
         });
     }
 
@@ -337,52 +350,6 @@ public class TableController implements Initializable{
     @FXML
     private void confirm() {
 
-        /*if (Game.turn){
-            Platform.runLater(()->{
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Confirmation");
-                alert.setHeaderText("Please choose a direction for the word to be submitted:");
-                alert.setContentText("Choose your option.");
-                ButtonType buttonTypeH = new ButtonType("Horizontal");
-                ButtonType buttonTypeV = new ButtonType("Vertical");
-                ButtonType buttonTypeCancel = new ButtonType("Unselect", ButtonBar.ButtonData.CANCEL_CLOSE);
-                alert.getButtonTypes().setAll(buttonTypeH, buttonTypeV, buttonTypeCancel);
-                Optional<ButtonType> result = alert.showAndWait();
-                String word =null;
-                String inputRegex = "^[a-zA-Z]{1}$";
-                // user chose "Horizontal"
-                if (result.get() == buttonTypeH){
-                    if (compare() == true){
-                        if (!getBoard()[index].matches(inputRegex)){
-                            Platform.runLater(()->{
-                                Alert alert1 = new Alert(Alert.AlertType.ERROR);
-                                alert1.setHeaderText("Input Error!");
-                                alert1.setContentText("You can only enter one letter in the box.");
-                                alert1.showAndWait();
-                            });
-                        } else {
-                            word = Game.horizontal(index,getBoard());
-                            Game.sendCharacter(index,getBoard()[index].toUpperCase(),word);
-                        }
-                    }
-                    // user chose "Vertical"
-                    //check error here
-                } else if (result.get() == buttonTypeV) {
-                    if (compare() == true){
-                        if (!getBoard()[index].matches(inputRegex)){
-                            Platform.runLater(()->{
-                                Alert alert1 = new Alert(Alert.AlertType.ERROR);
-                                alert1.setHeaderText("Input Error!");
-                                alert1.setContentText("You can only enter one letter in the box.");
-                                alert1.showAndWait();
-                            });
-                        } else {
-                            word = Game.vertical(index,getBoard());
-                            Game.sendCharacter(index,getBoard()[index].toUpperCase(),word);
-                        }
-                        //word = Game.vertical(index,getBoard());
-                        //Game.sendCharacter(index,getBoard()[index].toUpperCase(),word);*/
-
         if (Game.turn) {
             Platform.runLater(() -> {
                 String word = null;
@@ -391,30 +358,23 @@ public class TableController implements Initializable{
                     alert.setTitle("Error");
                     alert.setHeaderText("Please choose a block and enter a letter!");
                     alert.showAndWait();
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle("Confirmation");
-                    alert.setHeaderText("Choose a direction that word to be assessed");
-                    alert.setContentText("Choose your option.");
+                } else if(orientation!=-1){
 
-                    ButtonType buttonTypeOne = new ButtonType("Horizontal");
-                    ButtonType buttonTypeTwo = new ButtonType("Vertical");
-                    ButtonType buttonTypeCancel = new ButtonType("Unselect", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-                    alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeCancel);
-
-                    Optional<ButtonType> result = alert.showAndWait();
-                    if (result.get() == buttonTypeOne) {
+                    if (orientation==0) {
                         isInputOnce=false;
                         word = getHorizontalWord();
-                        Game.sendCharacter(getBoardInputPosition(), boardData[inputPos[0]-1][inputPos[1]-1].toUpperCase(), word, currentPlayer);
+                        Game.sendCharacter(getBoardInputPosition(), orientation, boardData[inputPos[0]-1][inputPos[1]-1].toUpperCase(), word, currentPlayer);
 
-                    } else if (result.get() == buttonTypeTwo) {
+                    } else if (orientation==1) {
                         isInputOnce=false;
                         word = getVerticalWord();
-                        Game.sendCharacter(getBoardInputPosition(), boardData[inputPos[0]-1][inputPos[1]-1].toUpperCase(), word, currentPlayer);
-
+                        Game.sendCharacter(getBoardInputPosition(), orientation, boardData[inputPos[0]-1][inputPos[1]-1].toUpperCase(), word, currentPlayer);
                     }
+                }else{
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Please choose word orientation!");
+                    alert.showAndWait();
                 }
             });
 
@@ -442,27 +402,74 @@ public class TableController implements Initializable{
         }
     }
 
-    public void startVoting(String name,String word){
+    @FXML
+    private void chooseHorizontalWord(){
         Platform.runLater(()->{
-            Alert alert1 = new Alert(Alert.AlertType.CONFIRMATION);
-
-            alert1.setTitle("Voting");
-            alert1.setHeaderText("Do you really think < "+word+" > is a word ?");
-
-            alert1.setContentText("Do you really think < "+word+" > is a word ?");
-            ButtonType buttonyes = new ButtonType("Yes");
-            ButtonType buttonno = new ButtonType("No");
-            alert1.getButtonTypes().setAll(buttonyes,buttonno);
-            Optional<ButtonType> result1 = alert1.showAndWait();
-            //add condition to not allow self voting by the player
-            if(result1.get()==buttonyes) {
-                Game.startVoting(true, currentPlayer, word);
-            }
-            else if(result1.get()==buttonno) {
-                Game.startVoting(false,currentPlayer , word);
+            if(Game.turn) {
+                if (!isInputOnce) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Please choose a block and enter a letter!");
+                    alert.showAndWait();
+                }else {
+                    deHilightAll();
+                    highLight(getBoardInputPosition(), 0);
+                    orientation=0;
+                }
+            }else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText("Not your turn!");
+                alert.setContentText("Please wait for others...");
+                alert.showAndWait();
             }
         });
     }
+
+
+    @FXML
+    private void chooseVerticalWord(){
+        Platform.runLater(()->{
+            if(Game.turn) {
+                if (!isInputOnce) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Please choose a block and enter a letter!");
+                    alert.showAndWait();
+                }else {
+                    deHilightAll();
+                    highLight(getBoardInputPosition(), 1);
+                    orientation=1;
+                }
+            }else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText("Not your turn!");
+                alert.setContentText("Please wait for others...");
+                alert.showAndWait();
+            }
+        });
+    }
+
+//    public void startVoting(String name,String word){
+//        Platform.runLater(()->{
+//            Alert alert1 = new Alert(Alert.AlertType.CONFIRMATION);
+//
+//            alert1.setTitle("Voting");
+//            alert1.setHeaderText("Do you really think < "+word+" > is a word ?");
+//
+//            alert1.setContentText("Do you really think < "+word+" > is a word ?");
+//            ButtonType buttonyes = new ButtonType("Yes");
+//            ButtonType buttonno = new ButtonType("No");
+//            alert1.getButtonTypes().setAll(buttonyes,buttonno);
+//            Optional<ButtonType> result1 = alert1.showAndWait();
+//            //add condition to not allow self voting by the player
+//            if(result1.get()==buttonyes) {
+//                Game.startVoting(true, currentPlayer, word);
+//            }
+//            else if(result1.get()==buttonno) {
+//                Game.startVoting(false,currentPlayer , word);
+//            }
+//        });
+//    }
 
     public void voting(String name,String word, String voteFor){
         Platform.runLater(()->{
@@ -522,58 +529,92 @@ public class TableController implements Initializable{
 
     // read letter input from cell
     @FXML private void keyListener(KeyEvent e) {
-        String input = e.getText();
-        SCell cell = ((SCell) e.getSource());
+        if(Game.turn) {
+            String input = e.getText();
+            SCell cell = ((SCell) e.getSource());
 
-        // set cell text from input, reset cell if input is 0
-        if (!cell.status.equals(CStatus.LOCK)) {
-            if (!cell.getText().isEmpty()){
-                if (input.equals("0")){
-                    cell.setText("");
-                    cell.setInitStatus();
-                    isInputOnce=false;
-                    boardData[inputPos[0]-1][inputPos[1]-1]="";
-                    inputPos[1]=0;
-                    inputPos[0]=0;
-                    if(selectWords.contains(cell)) {
-                        selectWords.remove(cell);
+            // set cell text from input, reset cell if input is 0
+            if (!cell.status.equals(CStatus.LOCK)) {
+                if (!cell.getText().isEmpty()) {
+                    if (input.equals("0")) {
+                        cell.setText("");
+                        cell.setInitStatus();
+                        isInputOnce = false;
+                        boardData[inputPos[0] - 1][inputPos[1] - 1] = "";
+                        inputPos[1] = 0;
+                        inputPos[0] = 0;
+                        if (selectWords.contains(cell)) {
+                            selectWords.remove(cell);
+                        }
                     }
+                    return;
                 }
-                return;
+                if (!isInputOnce && !input.isEmpty() && Pattern.matches("[a-zA-Z]", input)) {
+                    cell.setInitStatus();
+                    cell.setText(input);
+                    isInputOnce = true;
+                    inputPos[1] = playerBoard.getColumnIndex((SCell) e.getSource());
+                    inputPos[0] = playerBoard.getRowIndex((SCell) e.getSource());
+                    boardData[inputPos[0] - 1][inputPos[1] - 1] = input;
+                }
             }
-            if (!isInputOnce && !input.isEmpty() && Pattern.matches("[a-zA-Z]",input)) {
-                cell.setInitStatus();
-                cell.setText(input);
-                isInputOnce=true;
-                inputPos[1]=playerBoard.getColumnIndex((SCell) e.getSource());
-                inputPos[0]=playerBoard.getRowIndex((SCell) e.getSource());
-                boardData[inputPos[0]-1][inputPos[1]-1]=input;
-            }
+        }else{
+            Platform.runLater(()->{
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText("Not your turn!");
+                alert.setContentText("Please wait for others...");
+                alert.showAndWait();
+            });
         }
-
     }
 
     // click mouse to select words
     @FXML private void mouseListener(MouseEvent e) {
-        SCell cell = (SCell) e.getSource();
-        if(!cell.getText().isEmpty()) {
-            highLight(cell);
-        }
+
     }
 
-    private void highLight(SCell cell) {
-        // if the cell is highlighted, unhighlight it.
-        if (cell.isHighLight) {
-            cell.setInitStatus();
-            if(selectWords.contains(cell)) {
-                selectWords.remove(cell);
-            }
+    public void highLight(int[] letterPos, int wordOrientation) {
+        Platform.runLater(()-> {
+            int x = letterPos[0];
+            int y = letterPos[1];
+            int m;
 
-            // if the cell is not highlighted, highlight it.
-        } else {
-            cell.setHighLightStatus();
-            selectWords.add(cell);
-        }
+            if(wordOrientation == 0) {
+                m = 0;
+                while (y - m >= 0) {
+                    if (boardData[x][y - m].isEmpty()) {
+                        break;
+                    }
+                    cells.get(20 * x + y - m).setHighLightStatus();
+                    m++;
+                }
+                m = 1;
+                while (y + m < 20) {
+                    if (boardData[x][y + m].isEmpty()) {
+                        break;
+                    }
+                    cells.get(20 * x + y - m).setHighLightStatus();
+                    m++;
+                }
+            }else{
+                m=0;
+                while(x-m >= 0){
+                    if(boardData[x-m][y].isEmpty()){
+                        break;
+                    }
+                    cells.get(20 * (x-m) + y).setHighLightStatus();
+                    m++;
+                }
+                m=1;
+                while(x+m < 20){
+                    if(boardData[x+m][y].isEmpty()){
+                        break;
+                    }
+                    cells.get(20 * (x+m) + y).setHighLightStatus();
+                    m++;
+                }
+            }
+        });
     }
 
     // because inputPos records the position on the 21*21 gridPane, need to -1 get real position on board
@@ -583,6 +624,7 @@ public class TableController implements Initializable{
         position[1]=inputPos[1]-1;
         return position;
     }
+
 
     private String getHorizontalWord(){
         int m=0;

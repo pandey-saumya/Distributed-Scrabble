@@ -403,10 +403,11 @@ public class EachConnection implements Runnable {
                 game.setVotingNum(0);
                 game.setVotingYes(0);
                 gameContent(m);
-                break;
-            case WANTS_VOTING:
                 startVoting(m);
                 break;
+//            case WANTS_VOTING:
+//                startVoting(m);
+//                break;
             case VOTING:
                 voting(m);
                 break;
@@ -426,6 +427,7 @@ public class EachConnection implements Runnable {
         game_information();
         //broadcast
         toPlayers.setGameWord(m.getGameWord());
+        toPlayers.setWordOrientation(m.getWordOrientation());
         toPlayers.setClientName(this.clientName);
         toPlayers.setPlayerStatus(PlayerStatus.IN_GAME);
         toPlayers.setPlayerAction(PlayerAction.WANTS_VOTING);
@@ -447,6 +449,9 @@ public class EachConnection implements Runnable {
         toPlayers.setPlayerAction(PlayerAction.VOTING);
         toPlayers.setClientToVoteFor(name);
         toPlayers.setGameWord(m.getGameWord());
+        toPlayers.setGameLocation(m.getGameLocation());
+        toPlayers.setWordOrientation(m.getWordOrientation());
+
         boolean putToVote = m.getstartVoting();
         EachConnection[] players = game.getPlayerList();
 //        EachConnection[] listToBroadcastVoting = new EachConnection[game.getNumOfPlayer()];
@@ -465,13 +470,12 @@ public class EachConnection implements Runnable {
             game.SpaceRemain();
             game.turnPass(name);
             game_information();
-            setClientAction(PlayerAction.VOTING_DONE);
-            setClientStatus(PlayerStatus.IN_GAME);
         }
         setClientAction(PlayerAction.VOTING_DONE);
         setClientStatus(PlayerStatus.IN_GAME);
 //        roombroadCast(listToBroadcastVoting,toPlayers);
     }
+
     private void voting(Message m){
         System.out.println("voting is being called");
         GameRoom game = getCurrentGame();
