@@ -157,7 +157,7 @@ public class Game extends Application {
         sendmsg(message);
     }
 
-//
+
 
     public static void voting(int votingNum,String name,String word, String clientToVoteFor) {
         Message message = new Message();
@@ -222,7 +222,6 @@ public class Game extends Application {
         sendmsg(message);
     }
 
-//Reject Invite
     public static void inviteReject(String name){
         Message message = new Message();
         message.setPlayerStatus(PlayerStatus.IN_ROOM);
@@ -231,6 +230,5 @@ public class Game extends Application {
         message.setFeedBackMessage("R");
         sendmsg(message);
     }
-
 
 }

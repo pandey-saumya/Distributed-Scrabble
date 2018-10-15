@@ -208,7 +208,7 @@ public class HallController implements Initializable {
                 hBox.getChildren().addAll(acceptBtn,rejectBtn,table,inviteName);
                 inviteList.getChildren().add(hBox);
                 acceptBtn.addEventHandler(MouseEvent.MOUSE_CLICKED,(MouseEvent e)->{
-                    tableNumber = "Table "+String.valueOf(tableId);
+                    tableNumber = "Table "+String.valueOf(tableId)+" "+currentPlayer;
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/table.fxml"));
                     Parent window = null;
                     try {

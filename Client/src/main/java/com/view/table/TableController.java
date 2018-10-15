@@ -378,7 +378,8 @@ public class TableController implements Initializable{
                 }
             });
 
-        } else{
+        } else {
+
             Platform.runLater(() -> {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setHeaderText("Not your turn!");
@@ -449,7 +450,6 @@ public class TableController implements Initializable{
         });
     }
 
-// Voting function here
     public void voting(String name,String word, String voteFor){
         Platform.runLater(()->{
             Alert alert1 = new Alert(Alert.AlertType.CONFIRMATION);

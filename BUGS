@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 1. Player should not be allowed to enter a word in the grid till the second player clicks ready
 2. Throw exception on inviting unavailable client 
 3.Change error message pop up when other player has not joined and you are trying to play alone
@@ -10,4 +11,30 @@
 10. Put the invite option in the game hall
 11.Change the text in scrabble board to black
 12. check pass,vote and score logic thouroughly
+=======
+Update 15/10/18 10:42 AM
+
+Check-Player should not be allowed to enter a word in the grid till the second player clicks ready
+     -Player should enter one character per turn
+     
+
+
+Person can't add on letter multiple times in the same word before clicking confirm
+
+Incorrect error message thrown when one player is in the game trying to play
+
+Check green button status on empty player 
+
+4 players in the game, one player left when window is closed abruptly instead of pressing the button on his turn,then turn
+is not passed to next player
+
+Invitation accept feedback message add 
+
+Add a popup when the player changes the selection from horizontal to vertical " Do u wish to change word orientation selection? Click on
+Vertical/horizantal button to change the selection"
+
+
+Change higlighted colour to make it more visible in the grid
+
+>>>>>>> f3d7d24bf4683abd0f2322986377d9bd29ec81c9
 
