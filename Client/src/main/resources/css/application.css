@@ -10,7 +10,7 @@
 .button {
 	-fx-pref-width: 48.0px;
 	-fx-pref-height: 28.0px;
-    -fx-text-fill: rgb(132.0,117.0,225.0);
+    -fx-text-fill: rgb(0.0,0.0,0.0);
     -fx-font-size: 13.0px;
     -fx-font-weight: bold;
     -fx-background-radius: 0.0;

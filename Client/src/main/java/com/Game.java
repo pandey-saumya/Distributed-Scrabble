@@ -114,24 +114,6 @@ public class Game extends Application {
         HallController.getInstance().beInvited(inviteList);
     }
 
-//    public static void sendcharacter(String character, String location, String word){
-//        sendmsg("setCharacter|" + character+" " + location +" "+word);
-//    }
-//    public static void passturn(){
-//        sendmsg("passturn");
-//    }
-//    public static void voting(String word){
-//        //TODO show the word
-//        boolean vote = true;
-//        //TODO get the voting result from UI.
-//        if (vote == true){
-//            sendmsg("votingresult|true");
-//        }
-//        else{
-//            sendmsg("votingresult|false");
-//        }
-//    }
-
     public static void sendmsg(Message msg) {
         try {
             oos.writeObject(msg);
@@ -163,23 +145,29 @@ public class Game extends Application {
         sendmsg(message);
     }
 
-    public static void sendCharacter(int index, String character, String word) {
+    public static void sendCharacter(int[] position, int orientation, String character, String word, String name) {
         Message message = new Message();
         message.setPlayerStatus(PlayerStatus.IN_GAME);
         message.setPlayerAction(PlayerAction.SET_CHARACTER);
-        message.setGameLocation(index);
+        message.setGameLocation(position);
+        message.setWordOrientation(orientation);
         message.setGameCharacter(character);
         message.setGameWord(word);
+        message.setClientName(name);
         sendmsg(message);
     }
 
-    public static void voting(boolean votingResult,String name,String word) {
+//
+
+    public static void voting(int votingNum,String name,String word, String clientToVoteFor) {
         Message message = new Message();
         message.setPlayerStatus(PlayerStatus.IN_GAME);
         message.setPlayerAction(PlayerAction.VOTING);
         message.setClientName(name);
+        message.setClientToVoteFor(clientToVoteFor);
         message.setGameWord(word);
-        message.setVotingResult(votingResult);
+        message.setVotingNum(votingNum);
+        message.setFeedBackMessage("R");
         sendmsg(message);
     }
 
@@ -188,6 +176,14 @@ public class Game extends Application {
         message.setPlayerStatus(PlayerStatus.IN_ROOM);
         message.setPlayerAction(PlayerAction.INVITE_PLAYER);
         message.setClientName(name);
+        sendmsg(message);
+    }
+    public static void inviteAccept(String name){
+        Message message = new Message();
+        message.setPlayerStatus(PlayerStatus.IN_ROOM);
+        message.setPlayerAction(PlayerAction.INVITE_FEEDBACK);
+        message.setClientName(name);
+        message.setFeedBackMessage("A");
         sendmsg(message);
     }
 
@@ -226,41 +222,15 @@ public class Game extends Application {
         sendmsg(message);
     }
 
-    //TODO
+//Reject Invite
     public static void inviteReject(String name){
         Message message = new Message();
         message.setPlayerStatus(PlayerStatus.IN_ROOM);
         message.setPlayerAction(PlayerAction.INVITE_FEEDBACK);
         message.setClientName(name);
+        message.setFeedBackMessage("R");
         sendmsg(message);
     }
 
-    public static String horizontal(int location,String[] board){
-        String word = board[location];
-        int index = location;
-        while (((index-1) % 20 != 0)&&(!board[index-1].equals(""))){
-            index = index -1;
-            word = board[index] +word;
-        }
-        index = location;
-        while (((index+1 % 20) != 0) && (!board[index+1].equals(""))){
-            index = index+1;
-            word = word+board[index];
-        }
-        return word;
-    }
-    public static String vertical(int location,String[] board){
-        String word = board[location];
-        int index = location;
-        while (!(index < 20) && (!board[index-20].equals(""))){
-            index = index - 20;
-            word = board[index] + word;
-        }
-        index = location;
-        while (!(index >379) && (!board[index+20].equals(""))){
-            index = index + 20;
-            word = board[index] +word;
-        }
-        return word;
-    }
+
 }

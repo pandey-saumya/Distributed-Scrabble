@@ -44,6 +44,7 @@ public class UsernameController implements Initializable {
     public UsernameController() {
         instance = this;
     }
+    private boolean wait = false;
 
     public static UsernameController getInstance() {
         return instance;
@@ -172,11 +173,14 @@ public class UsernameController implements Initializable {
             alert.setContentText("Please enter your username or random one on the right.");
             alert.showAndWait();
         }else {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/hall.fxml"));
-            Parent window = (Pane) fxmlLoader.load();
-            hallController = fxmlLoader.getController();
-            this.scene = new Scene(window);
-            Game.setUsername(username);
+            if (!wait) {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/hall.fxml"));
+                Parent window = (Pane) fxmlLoader.load();
+                hallController = fxmlLoader.getController();
+                this.scene = new Scene(window);
+                Game.setUsername(username);
+                wait = true;
+            }
         }
     }
 
@@ -187,6 +191,7 @@ public class UsernameController implements Initializable {
             alert.setHeaderText("Username already exist");
             alert.setContentText("Please change a username.");
             alert.showAndWait();
+            wait = false;
         });
     }
 

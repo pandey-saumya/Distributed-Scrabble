@@ -1,3 +1,4 @@
+
 Implementation Left
 
 	1. Single alphabet entry handling -liping
@@ -16,4 +17,5 @@ Implementation Left
 	14. Game end condition  arushi and snigdha
 	15. Game result display 
 	16. Assign turns 
+
 	

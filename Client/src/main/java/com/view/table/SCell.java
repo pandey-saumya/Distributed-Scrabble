@@ -17,9 +17,14 @@ public class SCell extends Button {
 
     public void setInitStatus() {
         setEffect(null);
-        setStyle("-fx-text-fill: rgb(132, 117, 225)");
+        setStyle("-fx-text-fill: rgb(0, 0, 0)");
         status = CStatus.INIT;
         isHighLight = false;
+    }
+
+    public void setLockStatus(){
+        status=CStatus.LOCK;
+        isHighLight=false;
     }
 
     public void setHighLightStatus() {
@@ -29,5 +34,10 @@ public class SCell extends Button {
         innerShadow.setColor(Color.DEEPSKYBLUE);
         setEffect(innerShadow);
         isHighLight = true;
+    }
+
+    public void setDeHilightStatus(){
+        setEffect(null);
+        isHighLight = false;
     }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Message implements Serializable{
-    private String[] board;
+    private String[][] board;
     private Map<String,Integer> playerScore;
     private Map<String,String> connectedClients;
     private Map<Integer,Integer> createdGames;
@@ -18,7 +18,8 @@ public class Message implements Serializable{
     private GameStatus gameStatus;
     private PlayerStatus playerStatus;
     private String gameCharacter;
-    private int gameLocation;
+    private int[] gameLocation;
+    private int wordOrientation;
     private String gameWord;
     private String clientName;
     private String feedBackMessage;
@@ -26,6 +27,8 @@ public class Message implements Serializable{
     private int clientNum;
     private int tableId;
     private int votingNum;
+    private boolean startVoting;
+    private String clientToVoteFor;
     private static final long serialVersionUID = 1L;
 
 
@@ -43,11 +46,11 @@ public class Message implements Serializable{
         return getPlayerScore();
     }
 
-    public void setBoard(String[] board) {
+    public void setBoard(String[][] board) {
         this.board = board;
     }
 
-    public String[] getBoard() {
+    public String[][] getBoard() {
         return board;
     }
 
@@ -87,11 +90,11 @@ public class Message implements Serializable{
         this.gameCharacter = gameCharacter;
     }
 
-    public int getGameLocation() {
+    public int[] getGameLocation() {
         return gameLocation;
     }
 
-    public void setGameLocation(int gameLocation) {
+    public void setGameLocation(int[] gameLocation) {
         this.gameLocation = gameLocation;
     }
 
@@ -182,4 +185,24 @@ public class Message implements Serializable{
     public void setGameResult(String gameResult) {
         this.gameResult = gameResult;
     }
+
+    public boolean getstartVoting() {
+        return startVoting;
+    }
+
+    public void setStartVoting(boolean startVoting) {
+        this.startVoting = startVoting;
+    }
+
+    public String getClientToVoteFor() {
+        return clientToVoteFor;
+    }
+
+    public void setClientToVoteFor(String clientToVoteFor) {
+        this.clientToVoteFor = clientToVoteFor;
+    }
+
+    public void setWordOrientation(int wordOrientation){ this.wordOrientation=wordOrientation; }
+
+    public int getWordOrientation(){ return wordOrientation; }
 }

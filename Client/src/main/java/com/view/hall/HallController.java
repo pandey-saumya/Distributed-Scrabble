@@ -116,6 +116,7 @@ public class HallController implements Initializable {
     public Scene scene;
     private static Stage stage;
     public static String tableNumber;
+    public static String currentPlayer;
     private static HallController instance;
 
     public HallController() {
@@ -140,6 +141,10 @@ public class HallController implements Initializable {
 
     public void refreshTable(){
         playerList.setItems(data);
+    }
+
+    public void getCurrentPlayer(String name){
+        currentPlayer = name;
     }
 
     @Override
@@ -172,6 +177,7 @@ public class HallController implements Initializable {
         Platform.exit();
         System.exit(0);
     }
+
 
     public void beInvited( Map<String,Integer> List ){
         Platform.runLater(()->{
@@ -214,6 +220,9 @@ public class HallController implements Initializable {
                             {
                                 Game.inviteReject(rejKey);
                             }
+                            else{
+                                Game.inviteAccept(rejKey);
+                            }
                         }
                         Game.entryTable(tableId);
                         this.scene = new Scene(window);
@@ -238,7 +247,7 @@ public class HallController implements Initializable {
     }
 
     public void enterTable(int tableName) throws IOException{
-        tableNumber = "Table "+String.valueOf(tableName);
+        tableNumber = "Table "+String.valueOf(tableName)+" "+currentPlayer;
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/table.fxml"));
         Parent window = (Pane) fxmlLoader.load();

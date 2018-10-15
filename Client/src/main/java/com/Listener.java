@@ -46,6 +46,7 @@ public class Listener extends Thread {
                         }
                         break;
                     case IN_HALL:
+                        HallController.getInstance().getCurrentPlayer(name);
                         if (msg.getPlayerAction() == PlayerAction.JOIN_TABLE){
                             if ((msg.getFeedBackMessage()!=null) && (msg.getFeedBackMessage().equals("ValidTable"))) {
                                 Platform.runLater(()-> {
@@ -120,6 +121,7 @@ public class Listener extends Thread {
                         }
                         break;
                     case IN_GAME:
+                        TableController.getInstance().setCurrentPlayer(name);
                         if (msg.getPlayerAction() == PlayerAction.GAME_CONTENT) {
                             // Player name & turn
                             Set<String> keys_player = msg.getPlayerList().keySet();
@@ -150,17 +152,20 @@ public class Listener extends Thread {
                                 TableController.getInstance().refreshPlayerScore(key_score,score);
                             }
                             TableController.getInstance().setBoard(msg.getBoard());
+                            TableController.getInstance().deHilightAll();
                         }
+//                        if(msg.getPlayerAction()== PlayerAction.WANTS_VOTING){
+//                            String name = msg.getClientName();
+//                            String word = msg.getGameWord();
+//                            TableController.getInstance().startVoting(name,word);
+//                        }
                         if(msg.getPlayerAction()== PlayerAction.VOTING){
                             String name = msg.getClientName();
                             String word = msg.getGameWord();
 
-                            if (name.equals(this.name)){
-                                Game.voting(true,name,word);
-                            }
-                            else{
-                            TableController.getInstance().voting(name,word);}
-
+                            String toVoteFor = msg.getClientToVoteFor();
+                            TableController.getInstance().voting(name,word,toVoteFor);
+                            TableController.getInstance().highLight(msg.getGameLocation(),msg.getWordOrientation());
 
                         }
                         if (msg.getGameStatus()==GameStatus.ENDING){
