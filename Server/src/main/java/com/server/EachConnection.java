@@ -419,6 +419,9 @@ public class EachConnection implements Runnable {
             case PASS:
                 pass();
                 break;
+            case SEND_CHAT_MESSAGE:
+                broadcastChatMessage(m);
+                break;
         }
     }
 
@@ -578,6 +581,18 @@ public class EachConnection implements Runnable {
     private void broadCast(List<EachConnection> clients, Message m){
         for(EachConnection client : clients) {
             client.write(m);
+        }
+    }
+
+    private void broadcastChatMessage(Message m){
+        Message toPlayers = new Message();
+        //broadcast
+        toPlayers.setPlayerStatus(PlayerStatus.IN_GAME);
+        toPlayers.setPlayerAction(PlayerAction.SEND_CHAT_MESSAGE);
+        toPlayers.setChatMessage(m.getChatMessage());
+        List<EachConnection> clients = ServerState.getClientInstance().getConnectedClients();
+        for (EachConnection client : clients) {
+                client.write(toPlayers);
         }
     }
 

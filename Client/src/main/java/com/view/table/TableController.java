@@ -3,6 +3,8 @@ package com.view.table;
 import com.Game;
 import com.view.hall.HallController;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -59,6 +61,8 @@ public class TableController implements Initializable{
     @FXML private Label player4Score;
     @FXML private Label player4Ready;
     @FXML private ImageView player4Turn;
+    @FXML private TextField chatMessage;
+    @FXML private TextArea chatArea;
 
 
     @FXML private GridPane playerBoard;
@@ -153,6 +157,15 @@ public class TableController implements Initializable{
         player4Turn.setImage(new Image(getClass().getClassLoader().getResource("images/false.png").toString()));
 
         //</editor-fold> do
+
+        chatArea.textProperty().addListener(new ChangeListener<Object>() {
+            @Override
+            public void changed(ObservableValue<?> observable, Object oldValue,
+                                Object newValue) {
+                chatArea.setScrollTop(Double.MAX_VALUE); //this will scroll to the bottom
+                //use Double.MIN_VALUE to scroll to the top
+            }
+        });
 
     }
 //do not open text fields for UI
@@ -392,7 +405,11 @@ public class TableController implements Initializable{
     @FXML
     private void pass(){
         if (Game.turn){
-            Game.pass();
+            Platform.runLater(()-> {
+                Game.pass();
+                isInputOnce = false;
+                deHilightAll();
+            });
         }else {
             Platform.runLater(()->{
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -449,6 +466,29 @@ public class TableController implements Initializable{
             }
         });
     }
+
+    @FXML
+    private void sendChatMessage(){
+        Platform.runLater(()->{
+            if(chatMessage.getText().isEmpty()){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Can't send empty message!");
+                    alert.showAndWait();
+            }else{
+                String m=chatMessage.getText();
+                chatMessage.setText("");
+                Game.sendChatMessage(currentPlayer+":"+m);
+            }
+        });
+    }
+
+    public void addChatMessage(String m){
+        Platform.runLater(()->{
+            chatArea.appendText(m+"\n");
+        });
+    }
+
 
     public void voting(String name,String word, String voteFor){
         Platform.runLater(()->{

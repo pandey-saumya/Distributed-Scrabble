@@ -1179,36 +1179,36 @@
                   <Font name="Century" size="15.0" />
                </font>
     </Button>
-            <TextArea prefHeight="477.0" prefWidth="175.0" promptText="Chat box">
-               <VBox.margin>
-                  <Insets left="15.0" right="10.0" top="25.0" />
-               </VBox.margin>
-            </TextArea>
-            <TextField promptText="Type text here">
-               <VBox.margin>
-                  <Insets left="15.0" right="10.0" />
-               </VBox.margin>
-            </TextField>
-            <Button mnemonicParsing="false" prefHeight="21.0" prefWidth="175.0" text="Send">
-               <padding>
-                  <Insets right="10.0" />
-               </padding>
-               <VBox.margin>
-                  <Insets left="15.0" right="10.0" />
-               </VBox.margin>
-            </Button>
-            <Separator orientation="VERTICAL" prefHeight="350.0" visible="false" />
-            <Label prefHeight="11.0" prefWidth="183.0" text="Word Orientation" textAlignment="CENTER" textFill="#f89406">
-               <padding>
-                  <Insets left="22.0" />
-               </padding>
-               <font>
-                  <Font name="System Bold" size="16.0" />
-               </font>
-               <VBox.margin>
-                  <Insets left="10.0" />
-               </VBox.margin>
-            </Label>
+    <TextArea fx:id="chatArea" prefHeight="477.0" prefWidth="175.0" promptText="Chat box">
+       <VBox.margin>
+          <Insets left="15.0" right="10.0" top="25.0" />
+       </VBox.margin>
+    </TextArea>
+    <TextField fx:id="chatMessage" promptText="Type text here">
+       <VBox.margin>
+          <Insets left="15.0" right="10.0" />
+       </VBox.margin>
+    </TextField>
+    <Button mnemonicParsing="false" onAction="#sendChatMessage" prefHeight="30.0" prefWidth="170.0" text="Send">
+       <padding>
+          <Insets right="10.0" />
+       </padding>
+       <VBox.margin>
+          <Insets left="15.0" right="10.0" />
+       </VBox.margin>
+    </Button>
+    <Separator orientation="VERTICAL" prefHeight="350.0" visible="false" />
+    <Label prefHeight="11.0" prefWidth="183.0" text="Word Orientation" textAlignment="CENTER" textFill="#f89406">
+       <padding>
+          <Insets left="22.0" />
+       </padding>
+       <font>
+          <Font name="System Bold" size="16.0" />
+       </font>
+       <VBox.margin>
+          <Insets left="10.0" />
+       </VBox.margin>
+    </Label>
    <Button mnemonicParsing="false" onAction="#chooseHorizontalWord" prefHeight="45.0" prefWidth="170.0" text="Horizontal">
        <VBox.margin>
            <Insets left="15.0" top="20.0" />

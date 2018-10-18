@@ -168,6 +168,10 @@ public class Listener extends Thread {
                             TableController.getInstance().highLight(msg.getGameLocation(),msg.getWordOrientation());
 
                         }
+                        if(msg.getPlayerAction() == PlayerAction.SEND_CHAT_MESSAGE) {
+                            String m=msg.getChatMessage();
+                            TableController.getInstance().addChatMessage(m);
+                        }
                         if (msg.getGameStatus()==GameStatus.ENDING){
                             String winner = msg.getGameResult();
                             //show winner;

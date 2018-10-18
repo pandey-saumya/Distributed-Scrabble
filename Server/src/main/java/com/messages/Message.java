@@ -30,6 +30,7 @@ public class Message implements Serializable{
     private boolean startVoting;
     private String clientToVoteFor;
     private static final long serialVersionUID = 1L;
+    private String chatMessage;
 
 
     public GameStatus getGameStatus() {
@@ -205,4 +206,8 @@ public class Message implements Serializable{
     public void setWordOrientation(int wordOrientation){ this.wordOrientation=wordOrientation; }
 
     public int getWordOrientation(){ return wordOrientation; }
+
+    public void setChatMessage(String m){ chatMessage=m; }
+
+    public String getChatMessage(){ return chatMessage; }
 }

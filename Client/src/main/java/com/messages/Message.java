@@ -27,6 +27,7 @@ public class Message implements Serializable{
     private String clientToVoteFor;
     private static final long serialVersionUID = 1L;
     private String gameResult;
+    private String chatMessage;
 
     public String getGameResult(){
         return gameResult;
@@ -199,5 +200,9 @@ public class Message implements Serializable{
     public void setPlayerList(Map<String, String> playerList) {
         this.playerList = playerList;
     }
+
+    public void setChatMessage(String m){ chatMessage=m; }
+
+    public String getChatMessage(){ return chatMessage; }
 }
 

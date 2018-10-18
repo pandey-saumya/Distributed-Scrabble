@@ -157,6 +157,13 @@ public class Game extends Application {
         sendmsg(message);
     }
 
+    public static void sendChatMessage(String m){
+        Message message = new Message();
+        message.setPlayerStatus(PlayerStatus.IN_GAME);
+        message.setPlayerAction(PlayerAction.SEND_CHAT_MESSAGE);
+        message.setChatMessage(m);
+        sendmsg(message);
+    }
 
 
     public static void voting(int votingNum,String name,String word, String clientToVoteFor) {
