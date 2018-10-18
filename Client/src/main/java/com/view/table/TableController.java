@@ -530,11 +530,11 @@ public class TableController implements Initializable{
                 }
                 if (!isInputOnce && !input.isEmpty() && Pattern.matches("[a-zA-Z]", input)) {
                     cell.setInitStatus();
-                    cell.setText(input);
+                    cell.setText(input.toUpperCase());
                     isInputOnce = true;
                     inputPos[1] = playerBoard.getColumnIndex((SCell) e.getSource());
                     inputPos[0] = playerBoard.getRowIndex((SCell) e.getSource());
-                    boardData[inputPos[0] - 1][inputPos[1] - 1] = input;
+                    boardData[inputPos[0] - 1][inputPos[1] - 1] = input.toUpperCase();
                 }
             }
         }else{
